@@ -146,9 +146,7 @@ async function loadStatus() {
   messageElement.textContent = "空席情報を読み込んでいます。";
 
   try {
-    const response = await fetch(`./status.json?time=${Date.now()}`, {
-      cache: "no-store",
-    });
+    const response = await fetch("https://tight-snowflake-f83f.kameyama.workers.dev/status");
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
