@@ -1,0 +1,32 @@
+{
+  "communityName": "田町飲食コミュニティ",
+  "shops": [
+    {
+      "id": "shop-001",
+      "name": "焼鳥まる",
+      "genre": "焼鳥",
+      "status": "available",
+      "note": "2名まで、すぐにご案内できます。",
+      "updatedAt": "2026-07-17T01:30:00+09:00",
+      "url": "https://maps.google.com/"
+    },
+    {
+      "id": "shop-002",
+      "name": "酒場みなみ",
+      "genre": "居酒屋",
+      "status": "limited",
+      "note": "カウンター席のみ空いています。",
+      "updatedAt": "2026-07-17T01:24:00+09:00",
+      "url": "https://maps.google.com/"
+    },
+    {
+      "id": "shop-003",
+      "name": "BAR NEST",
+      "genre": "バー",
+      "status": "full",
+      "note": "現在満席です。",
+      "updatedAt": "2026-07-17T01:31:00+09:00",
+      "url": "https://maps.google.com/"
+    }
+  ]
+}

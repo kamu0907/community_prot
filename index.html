@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="近くの飲食店の空席状況を確認できます。" />
+  <title>田町飲食コミュニティ｜空席情報</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <p class="eyebrow">COMMUNITY</p>
+      <h1 id="community-name">飲食店コミュニティ</h1>
+      <p class="lead">今すぐ入れるお店を探せます。</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="summary" aria-label="空席情報の概要">
+      <div>
+        <p class="summary-label">現在の掲載店舗</p>
+        <p class="summary-value"><span id="shop-count">0</span>店舗</p>
+      </div>
+      <button id="reload-button" class="reload-button" type="button">
+        最新情報に更新
+      </button>
+    </section>
+
+    <section aria-labelledby="shop-list-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">LIVE STATUS</p>
+          <h2 id="shop-list-title">今入れるお店</h2>
+        </div>
+        <p id="last-loaded" class="last-loaded">読み込み中...</p>
+      </div>
+
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+      <div id="shop-list" class="shop-list"></div>
+    </section>
+  </main>
+
+  <template id="shop-card-template">
+    <article class="shop-card">
+      <div class="shop-card-top">
+        <div>
+          <p class="shop-genre"></p>
+          <h3 class="shop-name"></h3>
+        </div>
+        <span class="status-badge"></span>
+      </div>
+
+      <div class="shop-info">
+        <p class="shop-note"></p>
+        <p class="shop-updated"></p>
+      </div>
+
+      <a class="shop-link" href="#" target="_blank" rel="noopener noreferrer">
+        店舗情報を見る
+      </a>
+    </article>
+  </template>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>空席情報は店舗からの更新内容をもとに表示しています。</p>
+    </div>
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>
