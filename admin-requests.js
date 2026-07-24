@@ -228,10 +228,50 @@ article.innerHTML = `
         </div>
       `
       : `
-        <div class="request-approved-message">
-          承認済み
-        </div>
-      `
+  <div class="request-approved-box">
+    <p class="request-approved-message">
+      承認済み
+    </p>
+
+    ${
+      request.registrationCode
+        ? `
+          <div class="registration-code-block">
+            <p class="registration-code-label">
+              LINE店舗登録コード
+            </p>
+
+            <div class="registration-code-row">
+              <code class="registration-code">
+                ${escapeHtml(request.registrationCode)}
+              </code>
+
+              <button
+                class="copy-registration-code-button"
+                type="button"
+                data-registration-code="${escapeAttribute(
+                  request.registrationCode
+                )}"
+              >
+                コピー
+              </button>
+            </div>
+
+            <p class="registration-code-help">
+              LINEで「店舗登録 ${escapeHtml(
+                request.registrationCode
+              )}」と送信してください。
+            </p>
+          </div>
+        `
+        : `
+          <p class="registration-code-missing">
+            登録コードがありません。
+          </p>
+        `
+    }
+  </div>
+`
   }
 `;
   return article;
