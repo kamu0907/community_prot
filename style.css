@@ -560,3 +560,22 @@ main {
 #request-form {
     width: 100%;
 }
+.form-result {
+  min-height: 1.6em;
+  margin: 20px 0 0;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.form-result.is-success {
+  color: var(--available-text);
+}
+
+.form-result.is-error {
+  color: var(--full-text);
+}
+
+#request-form button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
