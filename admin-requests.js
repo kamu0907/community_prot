@@ -487,6 +487,41 @@ async function approveShopRequest(
       originalText;
   }
 }
+
+async function copyRegistrationCode(
+  registrationCode,
+  button
+) {
+  const text =
+    `店舗登録 ${registrationCode}`;
+
+  const originalText =
+    button.textContent;
+
+  try {
+    await navigator.clipboard.writeText(
+      text
+    );
+
+    button.textContent =
+      "コピーしました";
+
+    setTimeout(() => {
+      button.textContent =
+        originalText;
+    }, 1500);
+  } catch (error) {
+    console.error(
+      "コピーエラー:",
+      error
+    );
+
+    window.prompt(
+      "以下をコピーしてください。",
+      text
+    );
+  }
+}
 loadShopRequests();
 
 
