@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#faf6ef" />
+
+  <title>店舗掲載申請一覧</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <p class="eyebrow">ADMIN</p>
+      <h1>店舗掲載申請一覧</h1>
+      <p class="lead">申請された店舗情報を確認できます。</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="summary-card admin-summary">
+      <div class="summary-lead">
+        <p class="summary-label">申請件数</p>
+        <p class="summary-value">
+          <span id="request-count">0</span>
+          <span class="summary-unit">件</span>
+        </p>
+      </div>
+
+      <button
+        id="reload-requests-button"
+        class="reload-button"
+        type="button"
+      >
+        <span class="reload-icon" aria-hidden="true"></span>
+        <span class="reload-text">最新情報に更新</span>
+      </button>
+    </section>
+
+    <section aria-labelledby="request-list-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">REQUESTS</p>
+          <h2 id="request-list-title">掲載申請</h2>
+        </div>
+
+        <p id="request-last-loaded" class="last-loaded">
+          読み込み中...
+        </p>
+      </div>
+
+      <div
+        id="request-message"
+        class="message"
+        role="status"
+        aria-live="polite"
+      ></div>
+
+      <div id="request-list" class="request-list"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>店舗掲載申請の管理画面です。</p>
+    </div>
+  </footer>
+
+  <script src="./admin-requests.js"></script>
+</body>
+</html>
