@@ -3,27 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="近くの飲食店の空席状況を確認できます。" />
-  <title>品川飲食コミュニティ｜空席情報</title>
+  <meta name="theme-color" content="#faf6ef" />
+  <meta name="description" content="近くの飲食店の空席状況をリアルタイムで確認できます。" />
+  <title>品川飲食コミュニティ｜今入れるお店</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <header class="site-header">
-    <div class="container">
-      <p class="eyebrow">COMMUNITY</p>
+    <div class="container header-inner">
+      <p class="eyebrow">RESTAURANT COMMUNITY</p>
       <h1 id="community-name">飲食店コミュニティ</h1>
-      <p class="lead">今すぐ入れるお店を探せます。</p>
+      <p class="lead">今すぐ入れるお店を、ひと目で。</p>
     </div>
   </header>
 
   <main class="container">
-    <section class="summary" aria-label="空席情報の概要">
-      <div>
+    <section class="summary-card" aria-label="空席情報の概要">
+      <div class="summary-lead">
         <p class="summary-label">現在の掲載店舗</p>
-        <p class="summary-value"><span id="shop-count">0</span>店舗</p>
+        <p class="summary-value"><span id="shop-count">0</span><span class="summary-unit">店舗</span></p>
       </div>
+
+      <ul class="summary-stats" aria-label="ステータス別の店舗数">
+        <li class="stat">
+          <span class="stat-dot dot-available" aria-hidden="true"></span>
+          <span class="stat-count" id="count-available">0</span>
+          <span class="stat-name">空席あり</span>
+        </li>
+        <li class="stat">
+          <span class="stat-dot dot-limited" aria-hidden="true"></span>
+          <span class="stat-count" id="count-limited">0</span>
+          <span class="stat-name">残りわずか</span>
+        </li>
+        <li class="stat">
+          <span class="stat-dot dot-full" aria-hidden="true"></span>
+          <span class="stat-count" id="count-full">0</span>
+          <span class="stat-name">満席</span>
+        </li>
+      </ul>
+
       <button id="reload-button" class="reload-button" type="button">
-        最新情報に更新
+        <span class="reload-icon" aria-hidden="true"></span>
+        <span class="reload-text">最新情報に更新</span>
       </button>
     </section>
 
@@ -43,12 +70,16 @@
 
   <template id="shop-card-template">
     <article class="shop-card">
+      <span class="shop-accent" aria-hidden="true"></span>
       <div class="shop-card-top">
         <div>
           <p class="shop-genre"></p>
           <h3 class="shop-name"></h3>
         </div>
-        <span class="status-badge"></span>
+        <span class="status-badge">
+          <span class="status-badge-dot" aria-hidden="true"></span>
+          <span class="status-badge-label"></span>
+        </span>
       </div>
 
       <div class="shop-info">
@@ -58,6 +89,7 @@
 
       <a class="shop-link" href="#" target="_blank" rel="noopener noreferrer">
         店舗情報を見る
+        <span class="shop-link-arrow" aria-hidden="true">&rarr;</span>
       </a>
     </article>
   </template>

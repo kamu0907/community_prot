@@ -1,34 +1,40 @@
 const STATUS_CONFIG = {
   available: {
     label: "空席あり",
-    className: "status-available",
-    icon: "🟢",
+    badgeClass: "status-available",
+    cardClass: "is-available",
   },
   limited: {
     label: "残りわずか",
-    className: "status-limited",
-    icon: "🟡",
+    badgeClass: "status-limited",
+    cardClass: "is-limited",
   },
   full: {
     label: "満席",
-    className: "status-full",
-    icon: "🔴",
+    badgeClass: "status-full",
+    cardClass: "is-full",
   },
   unknown: {
     label: "情報未確認",
-    className: "status-unknown",
-    icon: "⚪",
+    badgeClass: "status-unknown",
+    cardClass: "is-unknown",
   },
 };
 
 const STALE_MINUTES = 30;
+const STATUS_ENDPOINT =
+  "https://tight-snowflake-f83f.kameyama.workers.dev/status";
 
 const communityNameElement = document.querySelector("#community-name");
 const shopCountElement = document.querySelector("#shop-count");
+const countAvailableElement = document.querySelector("#count-available");
+const countLimitedElement = document.querySelector("#count-limited");
+const countFullElement = document.querySelector("#count-full");
 const shopListElement = document.querySelector("#shop-list");
 const messageElement = document.querySelector("#message");
 const lastLoadedElement = document.querySelector("#last-loaded");
 const reloadButton = document.querySelector("#reload-button");
+const reloadText = reloadButton.querySelector(".reload-text");
 const template = document.querySelector("#shop-card-template");
 
 reloadButton.addEventListener("click", loadStatus);
@@ -56,7 +62,9 @@ function formatUpdatedAt(updatedAtText) {
     return "更新時刻不明";
   }
 
-  const elapsedMinutes = Math.floor((Date.now() - updatedAt.getTime()) / 1000 / 60);
+  const elapsedMinutes = Math.floor(
+    (Date.now() - updatedAt.getTime()) / 1000 / 60
+  );
 
   if (elapsedMinutes < 1) {
     return "たった今更新";
@@ -76,15 +84,19 @@ function formatUpdatedAt(updatedAtText) {
 
 function createShopCard(shop) {
   const fragment = template.content.cloneNode(true);
+  const card = fragment.querySelector(".shop-card");
   const effectiveStatus = getEffectiveStatus(shop);
   const config = STATUS_CONFIG[effectiveStatus];
 
+  card.classList.add(config.cardClass);
+
   fragment.querySelector(".shop-genre").textContent = shop.genre || "飲食店";
-  fragment.querySelector(".shop-name").textContent = shop.name || "店舗名未設定";
+  fragment.querySelector(".shop-name").textContent =
+    shop.name || "店舗名未設定";
 
   const statusBadge = fragment.querySelector(".status-badge");
-  statusBadge.textContent = `${config.icon} ${config.label}`;
-  statusBadge.classList.add(config.className);
+  statusBadge.classList.add(config.badgeClass);
+  fragment.querySelector(".status-badge-label").textContent = config.label;
 
   fragment.querySelector(".shop-note").textContent =
     effectiveStatus === "unknown"
@@ -107,12 +119,44 @@ function createShopCard(shop) {
   return fragment;
 }
 
+function renderSkeletons(count = 4) {
+  shopListElement.innerHTML = "";
+
+  for (let i = 0; i < count; i += 1) {
+    const card = document.createElement("article");
+    card.className = "shop-card is-skeleton";
+    card.setAttribute("aria-hidden", "true");
+    card.innerHTML = `
+      <span class="shop-accent"></span>
+      <div class="skeleton-line" style="width:38%"></div>
+      <div class="skeleton-line" style="width:70%;height:18px;margin-top:10px"></div>
+      <div class="skeleton-line" style="width:90%;margin-top:28px"></div>
+      <div class="skeleton-line" style="width:55%;margin-top:12px"></div>
+      <div class="skeleton-line" style="width:100%;height:44px;border-radius:14px;margin-top:auto"></div>
+    `;
+    shopListElement.appendChild(card);
+  }
+}
+
+function updateSummary(shops) {
+  const counts = { available: 0, limited: 0, full: 0, unknown: 0 };
+
+  shops.forEach((shop) => {
+    counts[getEffectiveStatus(shop)] += 1;
+  });
+
+  shopCountElement.textContent = shops.length;
+  countAvailableElement.textContent = counts.available;
+  countLimitedElement.textContent = counts.limited;
+  countFullElement.textContent = counts.full;
+}
+
 function render(data) {
   communityNameElement.textContent =
     data.communityName || "飲食店コミュニティ";
 
   const shops = Array.isArray(data.shops) ? data.shops : [];
-  shopCountElement.textContent = shops.length;
+  updateSummary(shops);
   shopListElement.innerHTML = "";
 
   if (shops.length === 0) {
@@ -120,19 +164,13 @@ function render(data) {
     return;
   }
 
-  shops
-    .sort((a, b) => {
-      const order = {
-        available: 0,
-        limited: 1,
-        full: 2,
-        unknown: 3,
-      };
+  const order = { available: 0, limited: 1, full: 2, unknown: 3 };
 
-      return (
-        order[getEffectiveStatus(a)] - order[getEffectiveStatus(b)]
-      );
-    })
+  shops
+    .slice()
+    .sort(
+      (a, b) => order[getEffectiveStatus(a)] - order[getEffectiveStatus(b)]
+    )
     .forEach((shop) => {
       shopListElement.appendChild(createShopCard(shop));
     });
@@ -142,11 +180,13 @@ function render(data) {
 
 async function loadStatus() {
   reloadButton.disabled = true;
-  reloadButton.textContent = "更新中...";
-  messageElement.textContent = "空席情報を読み込んでいます。";
+  reloadButton.classList.add("is-loading");
+  reloadText.textContent = "更新中...";
+  messageElement.textContent = "";
+  renderSkeletons();
 
   try {
-    const response = await fetch("https://tight-snowflake-f83f.kameyama.workers.dev/status");
+    const response = await fetch(STATUS_ENDPOINT);
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
@@ -155,12 +195,14 @@ async function loadStatus() {
     const data = await response.json();
     render(data);
 
-    lastLoadedElement.textContent =
-      `最終取得 ${new Intl.DateTimeFormat("ja-JP", {
+    lastLoadedElement.textContent = `最終取得 ${new Intl.DateTimeFormat(
+      "ja-JP",
+      {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
-      }).format(new Date())}`;
+      }
+    ).format(new Date())}`;
   } catch (error) {
     console.error(error);
     shopListElement.innerHTML = "";
@@ -168,7 +210,8 @@ async function loadStatus() {
       "空席情報を読み込めませんでした。少し時間を置いて再度お試しください。";
   } finally {
     reloadButton.disabled = false;
-    reloadButton.textContent = "最新情報に更新";
+    reloadButton.classList.remove("is-loading");
+    reloadText.textContent = "最新情報に更新";
   }
 }
 
