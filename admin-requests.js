@@ -1,6 +1,9 @@
 const SHOP_REQUESTS_ENDPOINT =
   "https://tight-snowflake-f83f.kameyama.workers.dev/shop-requests";
 
+const APPROVE_REQUEST_ENDPOINT =
+  "https://tight-snowflake-f83f.kameyama.workers.dev/admin/shop-requests";
+
 const requestCountElement =
   document.querySelector("#request-count");
 
@@ -132,75 +135,105 @@ function createRequestCard(request) {
   const requestedAt =
     formatDateTime(request.requestedAt);
 
-  article.innerHTML = `
-    <div class="request-card-header">
-      <div>
-        <p class="request-genre">
-          ${escapeHtml(request.genre || "ジャンル未設定")}
-        </p>
-        <h3 class="request-shop-name">
-          ${escapeHtml(request.shopName || "店舗名未設定")}
-        </h3>
-      </div>
+article.innerHTML = `
+  <div class="request-card-header">
+    <div>
+      <p class="request-genre">
+        ${escapeHtml(request.genre || "ジャンル未設定")}
+      </p>
 
-      <span class="request-status">
-        ${escapeHtml(getStatusLabel(request.status))}
-      </span>
+      <h3 class="request-shop-name">
+        ${escapeHtml(request.shopName || "店舗名未設定")}
+      </h3>
     </div>
 
-    <dl class="request-detail-list">
-      <div class="request-detail-row">
-        <dt>住所</dt>
-        <dd>${escapeHtml(request.address || "未入力")}</dd>
-      </div>
+    <span class="request-status request-status-${escapeHtml(
+      request.status || "pending"
+    )}">
+      ${escapeHtml(getStatusLabel(request.status))}
+    </span>
+  </div>
 
-      <div class="request-detail-row">
-        <dt>担当者</dt>
-        <dd>${escapeHtml(request.contactName || "未入力")}</dd>
-      </div>
+  <dl class="request-detail-list">
+    <div class="request-detail-row">
+      <dt>住所</dt>
+      <dd>${escapeHtml(request.address || "未入力")}</dd>
+    </div>
 
-      <div class="request-detail-row">
-        <dt>メール</dt>
-        <dd>${escapeHtml(request.email || "未入力")}</dd>
-      </div>
+    <div class="request-detail-row">
+      <dt>担当者</dt>
+      <dd>${escapeHtml(request.contactName || "未入力")}</dd>
+    </div>
 
-      <div class="request-detail-row">
-        <dt>備考</dt>
-        <dd>${escapeHtml(request.note || "未入力")}</dd>
-      </div>
+    <div class="request-detail-row">
+      <dt>メール</dt>
+      <dd>${escapeHtml(request.email || "未入力")}</dd>
+    </div>
 
-      <div class="request-detail-row">
-        <dt>申請日時</dt>
-        <dd>${escapeHtml(requestedAt)}</dd>
-      </div>
+    <div class="request-detail-row">
+      <dt>備考</dt>
+      <dd>${escapeHtml(request.note || "未入力")}</dd>
+    </div>
 
-      <div class="request-detail-row">
-        <dt>申請ID</dt>
-        <dd class="request-id">
-          ${escapeHtml(request.requestId || "")}
-        </dd>
-      </div>
-    </dl>
+    <div class="request-detail-row">
+      <dt>申請日時</dt>
+      <dd>${escapeHtml(requestedAt)}</dd>
+    </div>
 
-    ${
-      request.url
-        ? `
-          <a
-            class="shop-link"
-            href="${escapeAttribute(request.url)}"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div class="request-detail-row">
+      <dt>申請ID</dt>
+      <dd class="request-id">
+        ${escapeHtml(request.requestId || "")}
+      </dd>
+    </div>
+  </dl>
+
+  ${
+    request.url
+      ? `
+        <a
+          class="shop-link"
+          href="${escapeAttribute(request.url)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          店舗URLを開く
+          <span
+            class="shop-link-arrow"
+            aria-hidden="true"
           >
-            店舗URLを開く
-            <span class="shop-link-arrow" aria-hidden="true">
-              &rarr;
-            </span>
-          </a>
-        `
-        : ""
-    }
-  `;
+            &rarr;
+          </span>
+        </a>
+      `
+      : ""
+  }
 
+  ${
+    request.status === "pending"
+      ? `
+        <div class="request-actions">
+          <button
+            class="approve-request-button"
+            type="button"
+            data-request-id="${escapeAttribute(
+              request.requestId
+            )}"
+            data-shop-name="${escapeAttribute(
+              request.shopName || ""
+            )}"
+          >
+            この店舗を承認する
+          </button>
+        </div>
+      `
+      : `
+        <div class="request-approved-message">
+          承認済み
+        </div>
+      `
+  }
+`;
   return article;
 }
 
@@ -276,5 +309,124 @@ logoutButton.addEventListener(
   }
 );
 
+requestListElement.addEventListener(
+  "click",
+  handleRequestListClick
+);
+
+async function handleRequestListClick(event) {
+  const button =
+    event.target.closest(
+      ".approve-request-button"
+    );
+
+  if (!button) {
+    return;
+  }
+
+  const requestId =
+    button.dataset.requestId;
+
+  const shopName =
+    button.dataset.shopName || "この店舗";
+
+  if (!requestId) {
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      `${shopName}を承認して、店舗一覧へ公開しますか？`
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  await approveShopRequest(
+    requestId,
+    button
+  );
+}
+async function approveShopRequest(
+  requestId,
+  button
+) {
+  const adminToken =
+    sessionStorage.getItem(
+      ADMIN_TOKEN_KEY
+    );
+
+  if (!adminToken) {
+    window.location.href =
+      "./admin-login.html";
+
+    return;
+  }
+
+  const originalText =
+    button.textContent;
+
+  button.disabled = true;
+  button.textContent = "承認中...";
+
+  try {
+    const response = await fetch(
+      `${APPROVE_REQUEST_ENDPOINT}/${encodeURIComponent(
+        requestId
+      )}/approve`,
+      {
+        method: "POST",
+        headers: {
+          Authorization:
+            `Bearer ${adminToken}`
+        }
+      }
+    );
+
+    const data =
+      await response.json();
+
+    if (response.status === 401) {
+      sessionStorage.removeItem(
+        ADMIN_TOKEN_KEY
+      );
+
+      window.location.href =
+        "./admin-login.html";
+
+      return;
+    }
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.message ||
+        "承認処理に失敗しました。"
+      );
+    }
+
+    window.alert(
+      data.message ||
+      "店舗を承認しました。"
+    );
+
+    await loadShopRequests();
+  } catch (error) {
+    console.error(
+      "承認処理エラー:",
+      error
+    );
+
+    window.alert(
+      error.message ||
+      "承認処理に失敗しました。"
+    );
+
+    button.disabled = false;
+    button.textContent =
+      originalText;
+  }
+}
 loadShopRequests();
+
 
