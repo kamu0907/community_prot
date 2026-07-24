@@ -746,3 +746,56 @@ main {
   font-weight: 700;
   cursor: pointer;
 }
+
+.request-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.approve-request-button {
+  min-height: 46px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: #2f6f4e;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.approve-request-button:hover {
+  transform: translateY(-1px);
+}
+
+.approve-request-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+  transform: none;
+}
+
+.request-approved-message {
+  margin-top: 20px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #eaf5ed;
+  color: #24603f;
+  font-weight: 700;
+  text-align: center;
+}
+
+.request-status-approved {
+  color: #24603f;
+  background: #eaf5ed;
+}
+
+.request-status-pending {
+  color: var(--limited-text);
+  background: var(--limited-bg);
+}
