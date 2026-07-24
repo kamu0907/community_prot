@@ -19,6 +19,20 @@ const reloadButton =
 const reloadText =
   reloadButton.querySelector(".reload-text");
 
+const ADMIN_TOKEN_KEY =
+  "communityAdminToken";
+
+const adminToken =
+  sessionStorage.getItem(
+    ADMIN_TOKEN_KEY
+  );
+
+if (!adminToken) {
+  window.location.href =
+    "./admin-login.html";
+}
+
+
 reloadButton.addEventListener(
   "click",
   loadShopRequests
@@ -31,17 +45,34 @@ async function loadShopRequests() {
 
   try {
     const response = await fetch(
-      SHOP_REQUESTS_ENDPOINT
+      SHOP_REQUESTS_ENDPOINT,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${adminToken}`
+        }
+      }
     );
-
+    
+    if (response.status === 401) {
+      sessionStorage.removeItem(
+        ADMIN_TOKEN_KEY
+      );
+    
+      window.location.href =
+        "./admin-login.html";
+    
+      return;
+    }
+    
     if (!response.ok) {
       throw new Error(
         `HTTP ${response.status}`
       );
     }
-
+    
     const data = await response.json();
-
+    
     const requests = Array.isArray(data.requests)
       ? data.requests
       : [];
@@ -228,4 +259,22 @@ function escapeAttribute(value) {
   return escapeHtml(value);
 }
 
+const logoutButton =
+  document.querySelector(
+    "#logout-button"
+  );
+
+logoutButton.addEventListener(
+  "click",
+  () => {
+    sessionStorage.removeItem(
+      ADMIN_TOKEN_KEY
+    );
+
+    window.location.href =
+      "./admin-login.html";
+  }
+);
+
 loadShopRequests();
+
