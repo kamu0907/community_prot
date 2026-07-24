@@ -355,38 +355,58 @@ requestListElement.addEventListener(
 );
 
 async function handleRequestListClick(event) {
-  const button =
+  const approveButton =
     event.target.closest(
       ".approve-request-button"
     );
 
-  if (!button) {
-    return;
-  }
+  if (approveButton) {
+    const requestId =
+      approveButton.dataset.requestId;
 
-  const requestId =
-    button.dataset.requestId;
+    const shopName =
+      approveButton.dataset.shopName ||
+      "この店舗";
 
-  const shopName =
-    button.dataset.shopName || "この店舗";
+    if (!requestId) {
+      return;
+    }
 
-  if (!requestId) {
-    return;
-  }
+    const confirmed =
+      window.confirm(
+        `${shopName}を承認して、店舗一覧へ公開しますか？`
+      );
 
-  const confirmed =
-    window.confirm(
-      `${shopName}を承認して、店舗一覧へ公開しますか？`
+    if (!confirmed) {
+      return;
+    }
+
+    await approveShopRequest(
+      requestId,
+      approveButton
     );
 
-  if (!confirmed) {
     return;
   }
 
-  await approveShopRequest(
-    requestId,
-    button
-  );
+  const copyButton =
+    event.target.closest(
+      ".copy-registration-code-button"
+    );
+
+  if (copyButton) {
+    const registrationCode =
+      copyButton.dataset.registrationCode;
+
+    if (!registrationCode) {
+      return;
+    }
+
+    await copyRegistrationCode(
+      registrationCode,
+      copyButton
+    );
+  }
 }
 async function approveShopRequest(
   requestId,
