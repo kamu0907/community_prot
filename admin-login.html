@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta
+    name="theme-color"
+    content="#faf6ef"
+  />
+
+  <title>管理者ログイン</title>
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link
+    rel="stylesheet"
+    href="./style.css"
+  />
+</head>
+
+<body>
+  <main class="admin-login-page">
+    <section class="admin-login-card">
+      <p class="eyebrow">
+        COMMUNITY ADMIN
+      </p>
+
+      <h1>管理者ログイン</h1>
+
+      <p class="admin-login-description">
+        店舗掲載申請を確認するには、
+        管理者アカウントでログインしてください。
+      </p>
+
+      <form id="admin-login-form">
+        <div class="form-group">
+          <label for="username">
+            ユーザー名
+          </label>
+
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">
+            パスワード
+          </label>
+
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <div
+          id="login-message"
+          class="message"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+        <button
+          id="login-button"
+          class="submit-button"
+          type="submit"
+        >
+          ログイン
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <script src="./admin-login.js"></script>
+</body>
+</html>
