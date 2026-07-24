@@ -799,3 +799,86 @@ main {
   color: var(--limited-text);
   background: var(--limited-bg);
 }
+.request-approved-box {
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 16px;
+  background: #eaf5ed;
+}
+
+.request-approved-message {
+  margin: 0 0 14px;
+  color: #24603f;
+  font-weight: 700;
+  text-align: center;
+}
+
+.registration-code-block {
+  padding-top: 14px;
+  border-top: 1px solid rgba(36, 96, 63, 0.2);
+}
+
+.registration-code-label {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #24603f;
+}
+
+.registration-code-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.registration-code {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+.copy-registration-code-button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: #24603f;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.copy-registration-code-button:hover {
+  opacity: 0.9;
+}
+
+.registration-code-help {
+  margin: 10px 0 0;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: #3f5f4d;
+}
+
+.registration-code-missing {
+  margin: 0;
+  color: #8a5a00;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .registration-code-row {
+    flex-direction: column;
+  }
+
+  .registration-code,
+  .copy-registration-code-button {
+    width: 100%;
+  }
+}
