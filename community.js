@@ -7,6 +7,9 @@ const STATUS_CONFIG = {
 
 const STALE_MINUTES = 30;
 
+const API_BASE =
+  "https://tight-snowflake-f83f.kameyama.workers.dev";
+
 const communityNameElement = document.querySelector("#community-name");
 const communityAreaElement = document.querySelector("#community-area");
 const shopCountElement = document.querySelector("#shop-count");
@@ -204,12 +207,18 @@ async function loadStatus() {
       throw new Error(`コミュニティ「${getCommunityId()}」が見つかりません`);
     }
 
-    if (!selectedCommunity.apiUrl) {
-      throw new Error("apiUrlが設定されていません");
-    }
+const communityId =
+  getCommunityId();
 
-    const response = await fetch(selectedCommunity.apiUrl, { cache: "no-store" });
-
+const response = await fetch(
+  `${API_BASE}/communities/${encodeURIComponent(
+    communityId
+  )}/status`,
+  {
+    cache: "no-store"
+  }
+);
+    
     if (!response.ok) {
       throw new Error(`status API: HTTP ${response.status}`);
     }
