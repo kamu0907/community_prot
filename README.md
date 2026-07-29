@@ -1,30 +1,23 @@
-# コミュニティ一覧統合版
+# community_prot 複数コミュニティ対応 v2
 
-修正前の申請・管理機能とデザインを残したまま、コミュニティ一覧を追加した版です。
+## 公開画面
+- `index.html` 公開コミュニティ一覧
+- `community-create.html` コミュニティ作成
+- `community.html?id=shinagawa` 各コミュニティの店舗・空席一覧
+- `request.html?communityId=shinagawa` 店舗掲載申請
 
-## 配置方法
+公開画面から管理者画面へのリンクは削除しています。管理者は従来どおり `admin-login.html` を直接開きます。
 
-ZIP内のファイルをGitHub Pagesのリポジトリ直下へすべて上書き・追加してください。
-既存ファイルを個別に削除する必要はありません。
+## コミュニティ作成フロー
+1. 誰でも作成フォームを送信可能
+2. KVへ `status: pending` で保存
+3. 作成者へコミュニティIDと管理コードを表示
+4. 運営が確認して `status: active` に変更
+5. 一覧へ表示
 
-## 主なURL
+## Worker
+`worker-multi-community.example.js` は複数コミュニティ用ルートの参考実装です。
+現在のWorkerにあるLINE webhook、管理者ログイン、申請承認処理を残した上で統合してください。
 
-- `index.html`：コミュニティ一覧
-- `community.html?id=shinagawa`：品川コミュニティ
-- `request.html`：店舗掲載申請
-- `admin-login.html`：管理者ログイン
-- `admin-requests.html`：申請管理
-
-## API
-
-既存の以下のAPIを変更せず利用します。
-
-- `GET /status`
-- `POST /shop-requests`
-- `GET /shop-requests`
-- `POST /admin/login`
-- `POST /admin/shop-requests/{requestId}/approve`
-
-## 注意
-
-`communities.json`の`shopCount`は一覧カード表示用の固定値です。店舗数が変わった場合は数値を更新してください。
+## KV
+`KV-MIGRATION.md` に既存品川データを消さずに移行する手順があります。

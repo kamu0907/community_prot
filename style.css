@@ -979,3 +979,18 @@ main {
   .community-intro-card { align-items: stretch; flex-direction: column; gap: 18px; }
   .community-grid, .portal-links { grid-template-columns: 1fr; }
 }
+
+/* Multi-community v2 */
+.portal-link-card-wide { grid-column: 1 / -1; }
+.create-community-card { align-items: stretch; }
+.create-community-card form { width: 100%; }
+.form-help { margin: -4px 0 20px; color: var(--muted); font-size: .86rem; line-height: 1.7; }
+.form-group select { min-height: 50px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: #fff; font: inherit; }
+.create-result-box { display: grid; gap: 10px; margin-top: 22px; padding: 18px; border-radius: 14px; background: var(--available-bg); }
+.create-result-box dl { margin: 0; }
+.create-result-box dl div { display: grid; grid-template-columns: 140px 1fr; gap: 12px; padding: 8px 0; }
+.create-result-box dt { font-weight: 700; }
+.create-result-box dd { margin: 0; overflow-wrap: anywhere; }
+.back-link-wrap { margin: 22px 0 70px; }
+.back-link { color: var(--muted); text-decoration: none; font-weight: 700; }
+@media (max-width: 520px) { .create-result-box dl div { grid-template-columns: 1fr; gap: 3px; } }

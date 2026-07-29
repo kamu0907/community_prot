@@ -22,8 +22,9 @@ const STATUS_CONFIG = {
 };
 
 const STALE_MINUTES = 30;
-const STATUS_ENDPOINT =
-  "https://tight-snowflake-f83f.kameyama.workers.dev/status";
+const API_BASE = "https://tight-snowflake-f83f.kameyama.workers.dev";
+const communityId = new URLSearchParams(window.location.search).get("id") || "shinagawa";
+const STATUS_ENDPOINT = `${API_BASE}/communities/${encodeURIComponent(communityId)}/status`;
 
 const communityNameElement = document.querySelector("#community-name");
 const shopCountElement = document.querySelector("#shop-count");
@@ -36,6 +37,8 @@ const lastLoadedElement = document.querySelector("#last-loaded");
 const reloadButton = document.querySelector("#reload-button");
 const reloadText = reloadButton.querySelector(".reload-text");
 const template = document.querySelector("#shop-card-template");
+const requestLinks = [document.querySelector("#shop-request-nav-link"), document.querySelector("#shop-request-link")].filter(Boolean);
+requestLinks.forEach((link) => { link.href = `./request.html?communityId=${encodeURIComponent(communityId)}`; });
 
 reloadButton.addEventListener("click", loadStatus);
 

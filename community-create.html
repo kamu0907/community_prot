@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>コミュニティを作成</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<header class="site-header"><div class="container header-inner"><nav class="header-nav"><a href="./index.html">コミュニティ一覧</a></nav><p class="eyebrow">CREATE COMMUNITY</p><h1>コミュニティを作成</h1><p class="lead">地域や仲間のお店で、新しいつながりを始めましょう。</p></div></header>
+<main class="container">
+  <section class="summary-card create-community-card">
+    <form id="community-create-form">
+      <div class="form-group"><label for="name">コミュニティ名</label><input id="name" name="name" maxlength="80" required placeholder="例：品川飲食コミュニティ" /></div>
+      <div class="form-group"><label for="area">対象エリア</label><input id="area" name="area" maxlength="100" required placeholder="例：品川・北品川・新馬場" /></div>
+      <div class="form-group"><label for="description">紹介文</label><textarea id="description" name="description" maxlength="500" rows="5" required placeholder="コミュニティの目的や対象店舗をご記入ください。"></textarea></div>
+      <div class="form-group"><label for="ownerName">作成者名</label><input id="ownerName" name="ownerName" maxlength="100" required /></div>
+      <div class="form-group"><label for="email">メールアドレス</label><input id="email" name="email" type="email" maxlength="200" required /></div>
+      <p class="form-help">作成後は確認待ちになります。運営確認後、コミュニティ一覧へ公開されます。</p>
+      <button id="community-create-button" class="reload-button" type="submit">コミュニティを作成する</button>
+      <div id="community-create-result" class="form-result" role="status" aria-live="polite"></div>
+    </form>
+  </section>
+</main>
+<footer class="site-footer"><div class="container"><p>管理コードは再表示できないため、安全な場所に保存してください。</p></div></footer>
+<script src="./community-create.js"></script>
+</body>
+</html>
