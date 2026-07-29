@@ -29,16 +29,35 @@ function getCommunityId() {
 }
 
 async function getCommunityConfig() {
-  const response = await fetch("./communities.json", { cache: "no-store" });
+  const response = await fetch(
+    `${API_BASE}/communities`,
+    {
+      cache: "no-store"
+    }
+  );
 
   if (!response.ok) {
-    throw new Error(`communities.json: HTTP ${response.status}`);
+    throw new Error(
+      `communities API: HTTP ${response.status}`
+    );
   }
 
   const data = await response.json();
-  const communities = Array.isArray(data.communities) ? data.communities : [];
-  const communityId = getCommunityId();
-  return communities.find((item) => item.id === communityId) || null;
+
+  const communities =
+    Array.isArray(data.communities)
+      ? data.communities
+      : [];
+
+  const communityId =
+    getCommunityId();
+
+  return (
+    communities.find(
+      (item) =>
+        item.id === communityId
+    ) || null
+  );
 }
 
 function getEffectiveStatus(shop) {
