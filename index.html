@@ -14,24 +14,23 @@
 <body class="community-list-page">
   <header class="site-header list-header">
     <div class="container header-inner">
+      <nav class="header-nav" aria-label="ページメニュー">
+        <a href="./request.html">店舗掲載申請</a>
+        <a href="./admin-login.html">管理者画面</a>
+      </nav>
       <p class="eyebrow">RESTAURANT COMMUNITY</p>
       <h1>飲食店コミュニティ</h1>
       <p class="lead">地域を選んで、今入れるお店を探そう。</p>
     </div>
   </header>
 
-  <main class="container list-main">
-    <section class="intro-card">
+  <main class="container community-list-main">
+    <section class="community-intro-card">
       <div>
         <p class="summary-label">参加コミュニティ</p>
-        <p class="summary-value">
-          <span id="community-count">0</span>
-          <span class="summary-unit">コミュニティ</span>
-        </p>
+        <p class="summary-value"><span id="community-count">0</span><span class="summary-unit">コミュニティ</span></p>
       </div>
-      <p class="intro-text">
-        地域の飲食店が空席情報を共有しています。気になるエリアを選択してください。
-      </p>
+      <p>地域の飲食店が空席情報を共有しています。気になるエリアを選択してください。</p>
     </section>
 
     <section aria-labelledby="community-list-title">
@@ -41,9 +40,21 @@
           <h2 id="community-list-title">コミュニティ一覧</h2>
         </div>
       </div>
-
       <div id="community-message" class="message" role="status" aria-live="polite"></div>
       <div id="community-list" class="community-grid"></div>
+    </section>
+
+    <section class="portal-links" aria-label="その他のメニュー">
+      <a href="./request.html" class="portal-link-card">
+        <span class="portal-link-eyebrow">FOR SHOPS</span>
+        <strong>店舗の掲載を申請する</strong>
+        <span>コミュニティへの参加申請はこちら →</span>
+      </a>
+      <a href="./admin-login.html" class="portal-link-card">
+        <span class="portal-link-eyebrow">ADMIN</span>
+        <strong>管理者画面</strong>
+        <span>申請の確認・承認はこちら →</span>
+      </a>
     </section>
   </main>
 
@@ -59,22 +70,16 @@
         <p class="community-description"></p>
         <div class="community-meta">
           <span><strong class="community-shop-count">0</strong> 店舗掲載</span>
-          <span class="community-status">公開中</span>
+          <span class="community-status"></span>
         </div>
-        <a class="community-link" href="#">
-          コミュニティを見る
-          <span aria-hidden="true">→</span>
-        </a>
+        <a class="community-link" href="#">コミュニティを見る <span aria-hidden="true">→</span></a>
       </div>
     </article>
   </template>
 
   <footer class="site-footer">
-    <div class="container">
-      <p>掲載情報は各コミュニティ・店舗からの更新内容をもとに表示しています。</p>
-    </div>
+    <div class="container"><p>掲載情報は各コミュニティ・店舗からの更新内容をもとに表示しています。</p></div>
   </footer>
-
   <script src="./communities.js"></script>
 </body>
 </html>

@@ -1,71 +1,30 @@
-# community_prot コミュニティ一覧対応版
+# コミュニティ一覧統合版
 
-## 今回の構成
+修正前の申請・管理機能とデザインを残したまま、コミュニティ一覧を追加した版です。
 
-```text
-community_prot/
-├─ index.html          # コミュニティ一覧
-├─ community.html      # 店舗・空席一覧
-├─ communities.json    # コミュニティ設定
-├─ communities.js      # 一覧画面処理
-├─ community.js        # 店舗一覧画面処理
-└─ style.css           # 共通デザイン
-```
+## 配置方法
 
-## GitHub Pagesへの反映
+ZIP内のファイルをGitHub Pagesのリポジトリ直下へすべて上書き・追加してください。
+既存ファイルを個別に削除する必要はありません。
 
-現在のリポジトリ直下に、この6ファイルを配置してください。
+## 主なURL
 
-- 既存の `index.html` は、今回の `community.html` 相当になります。
-- 今回の `index.html` が新しいコミュニティ一覧ページです。
-- 既存の `script.js` は使用しないため、残しても問題ありませんが削除して構いません。
-- `status.json` もWorkerを利用しているなら画面からは使用しません。
+- `index.html`：コミュニティ一覧
+- `community.html?id=shinagawa`：品川コミュニティ
+- `request.html`：店舗掲載申請
+- `admin-login.html`：管理者ログイン
+- `admin-requests.html`：申請管理
 
-## URL
+## API
 
-コミュニティ一覧:
+既存の以下のAPIを変更せず利用します。
 
-```text
-https://kamu0907.github.io/community_prot/
-```
+- `GET /status`
+- `POST /shop-requests`
+- `GET /shop-requests`
+- `POST /admin/login`
+- `POST /admin/shop-requests/{requestId}/approve`
 
-品川コミュニティ:
+## 注意
 
-```text
-https://kamu0907.github.io/community_prot/community.html?id=shinagawa
-```
-
-## 現在のWorkerを壊さない設計
-
-`communities.json` の `apiUrl` に、現在利用中のWorker URLを設定しています。
-
-```json
-"apiUrl": "https://tight-snowflake-f83f.kameyama.workers.dev/status"
-```
-
-そのため、LINEから更新している現在の品川の空席データを、そのまま表示できます。
-WorkerコードやKV構造の変更は不要です。
-
-## コミュニティを追加するとき
-
-まず `communities.json` にカードを追加します。
-
-```json
-{
-  "id": "kamata",
-  "name": "蒲田飲食コミュニティ",
-  "area": "蒲田・京急蒲田",
-  "description": "蒲田エリアの飲食店コミュニティです。",
-  "shopCount": 0,
-  "status": "preparing",
-  "apiUrl": ""
-}
-```
-
-準備中は `status` を `preparing` にします。公開時は `active` に変更し、専用WorkerのURLを `apiUrl` に設定します。
-
-## shopCountについて
-
-現在は一覧表示用の固定値です。品川の掲載店舗数に合わせて `communities.json` の `shopCount` を変更してください。
-
-将来Workerを複数コミュニティ対応にした段階で、APIから自動取得する形に変更できます。
+`communities.json`の`shopCount`は一覧カード表示用の固定値です。店舗数が変わった場合は数値を更新してください。
