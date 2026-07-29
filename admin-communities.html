@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <meta
+    name="theme-color"
+    content="#faf6ef"
+  />
+
+  <title>コミュニティ管理</title>
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link
+    rel="stylesheet"
+    href="./style.css"
+  />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a
+        class="page-back-link page-back-link-light"
+        href="./index.html"
+      >
+        ← コミュニティ一覧へ戻る
+      </a>
+
+      <p class="eyebrow">ADMIN</p>
+      <h1>コミュニティ管理</h1>
+      <p class="lead">
+        作成申請の確認と承認を行います。
+      </p>
+
+      <nav class="header-nav" aria-label="管理メニュー">
+        <a href="./admin-requests.html">
+          店舗掲載申請
+        </a>
+        <a href="./admin-shops.html">
+          登録済み店舗
+        </a>
+      </nav>
+
+      <button
+        id="logout-button"
+        class="logout-button"
+        type="button"
+      >
+        ログアウト
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="summary-card admin-summary">
+      <div class="summary-lead">
+        <p class="summary-label">
+          承認待ち
+        </p>
+
+        <p class="summary-value">
+          <span id="pending-count">0</span>
+          <span class="summary-unit">件</span>
+        </p>
+      </div>
+
+      <div class="summary-stats">
+        <p class="stat">
+          <span class="stat-dot dot-available"></span>
+          公開中
+          <span
+            id="active-count"
+            class="stat-count"
+          >
+            0
+          </span>
+        </p>
+
+        <p class="stat">
+          合計
+          <span
+            id="community-count"
+            class="stat-count"
+          >
+            0
+          </span>
+        </p>
+      </div>
+
+      <button
+        id="reload-communities-button"
+        class="reload-button"
+        type="button"
+      >
+        <span
+          class="reload-icon"
+          aria-hidden="true"
+        ></span>
+        <span class="reload-text">
+          最新情報に更新
+        </span>
+      </button>
+    </section>
+
+    <section aria-labelledby="community-list-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">
+            COMMUNITIES
+          </p>
+          <h2 id="community-list-title">
+            コミュニティ一覧
+          </h2>
+        </div>
+
+        <p
+          id="community-last-loaded"
+          class="last-loaded"
+        >
+          読み込み中...
+        </p>
+      </div>
+
+      <div
+        id="community-message"
+        class="message"
+        role="status"
+        aria-live="polite"
+      ></div>
+
+      <div
+        id="admin-community-list"
+        class="request-list"
+      ></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        コミュニティ作成申請の管理画面です。
+      </p>
+    </div>
+  </footer>
+
+  <script src="./admin-communities.js"></script>
+</body>
+</html>
