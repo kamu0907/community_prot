@@ -1208,3 +1208,31 @@ main {
   opacity: 0.6;
   cursor: wait;
 }
+
+/* =========================================================
+   コミュニティ管理画面
+   style.css の末尾へ追加
+   ========================================================= */
+
+#admin-community-list .request-actions {
+  gap: 12px;
+}
+
+#admin-community-list .request-approved-box {
+  margin-top: 20px;
+}
+
+#admin-community-list .request-approved-message {
+  margin: 0;
+}
+
+#admin-community-list a {
+  color: var(--primary);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  #admin-community-list .approve-request-button {
+    width: 100%;
+  }
+}
