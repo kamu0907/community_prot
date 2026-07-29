@@ -187,15 +187,19 @@ ${escapeHtml(
 </div>
 
 <span class="request-status ${
-  pending
+  community.status === "pending"
     ? "request-status-pending"
-    : "request-status-approved"
+    : community.status === "active"
+      ? "request-status-approved"
+      : "request-status-inactive"
 }">
 
 ${
-  pending
+  community.status === "pending"
     ? "承認待ち"
-    : "公開中"
+    : community.status === "active"
+      ? "公開中"
+      : "非公開"
 }
 
 </span>
