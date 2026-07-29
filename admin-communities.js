@@ -252,14 +252,27 @@ data-community-id="${community.id}">
 
 </div>
 `
-    : `
-<div class="request-approved-box">
+: `
+<div class="request-actions">
 
-<p class="request-approved-message">
+<button
+  class="approve-request-button edit-community-button"
+  type="button"
+  data-community-id="${community.id}"
+>
+  編集
+</button>
 
-公開中です
-
-</p>
+<button
+  class="delete-community-button"
+  type="button"
+  data-community-id="${community.id}"
+  data-community-name="${escapeHtml(
+    community.name
+  )}"
+>
+  削除
+</button>
 
 </div>
 `
