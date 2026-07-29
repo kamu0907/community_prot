@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#faf6ef" />
+
+  <title>登録済み店舗管理</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a
+        class="page-back-link page-back-link-light"
+        href="./admin-requests.html"
+      >
+        ← 店舗掲載申請一覧へ戻る
+      </a>
+
+      <p class="eyebrow">ADMIN</p>
+      <h1>登録済み店舗管理</h1>
+      <p class="lead">
+        コミュニティごとの店舗情報を編集・削除できます。
+      </p>
+
+      <button
+        id="logout-button"
+        class="logout-button"
+        type="button"
+      >
+        ログアウト
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="summary-card admin-summary">
+      <div class="summary-lead">
+        <p class="summary-label">対象コミュニティ</p>
+
+        <label
+          for="community-select"
+          class="visually-hidden"
+        >
+          コミュニティを選択
+        </label>
+
+        <select
+          id="community-select"
+          class="form-control"
+        >
+          <option value="">
+            コミュニティを選択してください
+          </option>
+        </select>
+      </div>
+
+      <button
+        id="reload-shops-button"
+        class="reload-button"
+        type="button"
+      >
+        <span
+          class="reload-icon"
+          aria-hidden="true"
+        ></span>
+        <span class="reload-text">
+          最新情報に更新
+        </span>
+      </button>
+    </section>
+
+    <section aria-labelledby="shop-list-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SHOPS</p>
+          <h2 id="shop-list-title">
+            登録済み店舗
+          </h2>
+        </div>
+
+        <p
+          id="shop-last-loaded"
+          class="last-loaded"
+        >
+          コミュニティを選択してください
+        </p>
+      </div>
+
+      <div
+        id="shop-message"
+        class="message"
+        role="status"
+        aria-live="polite"
+      ></div>
+
+      <div
+        id="shop-list"
+        class="request-list"
+      ></div>
+    </section>
+  </main>
+
+  <div
+    id="shop-edit-modal"
+    class="modal"
+    hidden
+  >
+    <div
+      class="modal-backdrop"
+      data-close-modal
+    ></div>
+
+    <section
+      class="modal-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="shop-edit-title"
+    >
+      <div class="modal-header">
+        <h2 id="shop-edit-title">
+          店舗情報を編集
+        </h2>
+
+        <button
+          type="button"
+          class="modal-close-button"
+          data-close-modal
+          aria-label="閉じる"
+        >
+          ×
+        </button>
+      </div>
+
+      <form id="shop-edit-form">
+        <input
+          id="edit-shop-id"
+          type="hidden"
+        />
+
+        <div class="form-group">
+          <label for="edit-shop-name">
+            店舗名
+          </label>
+          <input
+            id="edit-shop-name"
+            class="form-control"
+            type="text"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-shop-genre">
+            ジャンル
+          </label>
+          <input
+            id="edit-shop-genre"
+            class="form-control"
+            type="text"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-shop-address">
+            住所
+          </label>
+          <input
+            id="edit-shop-address"
+            class="form-control"
+            type="text"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-shop-url">
+            店舗URL
+          </label>
+          <input
+            id="edit-shop-url"
+            class="form-control"
+            type="url"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-shop-status">
+            空席状況
+          </label>
+          <select
+            id="edit-shop-status"
+            class="form-control"
+          >
+            <option value="available">
+              空席あり
+            </option>
+            <option value="limited">
+              残りわずか
+            </option>
+            <option value="full">
+              満席
+            </option>
+          </select>
+        </div>
+
+        <div class="request-actions">
+          <button
+            type="button"
+            class="reload-button"
+            data-close-modal
+          >
+            キャンセル
+          </button>
+
+          <button
+            id="save-shop-button"
+            type="submit"
+            class="approve-request-button"
+          >
+            変更を保存
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>登録済み店舗の管理画面です。</p>
+    </div>
+  </footer>
+
+  <script src="./admin-shops.js"></script>
+</body>
+</html>
