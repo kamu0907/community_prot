@@ -151,7 +151,176 @@
       ></div>
     </section>
   </main>
+<!-- =====================================================
+     コミュニティ編集モーダル
+     ===================================================== -->
+<div
+  id="community-edit-modal"
+  class="modal"
+  aria-hidden="true"
+>
+  <div
+    class="modal-overlay"
+    data-close-community-modal
+  ></div>
 
+  <div
+    class="modal-content"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="community-edit-title"
+  >
+    <div class="modal-header">
+      <div>
+        <p class="eyebrow">
+          EDIT COMMUNITY
+        </p>
+
+        <h2 id="community-edit-title">
+          コミュニティ編集
+        </h2>
+      </div>
+
+      <button
+        id="close-community-modal-button"
+        class="modal-close-button"
+        type="button"
+        aria-label="閉じる"
+      >
+        ×
+      </button>
+    </div>
+
+    <form id="community-edit-form">
+      <input
+        id="edit-community-id"
+        type="hidden"
+      />
+
+      <div class="form-group">
+        <label for="edit-community-name">
+          コミュニティ名
+          <span class="required-mark">
+            必須
+          </span>
+        </label>
+
+        <input
+          id="edit-community-name"
+          name="name"
+          type="text"
+          maxlength="100"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="edit-community-area">
+          エリア
+          <span class="required-mark">
+            必須
+          </span>
+        </label>
+
+        <input
+          id="edit-community-area"
+          name="area"
+          type="text"
+          maxlength="100"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="edit-community-description">
+          説明
+        </label>
+
+        <textarea
+          id="edit-community-description"
+          name="description"
+          rows="5"
+          maxlength="1000"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-community-owner-name">
+          申請者・担当者名
+        </label>
+
+        <input
+          id="edit-community-owner-name"
+          name="ownerName"
+          type="text"
+          maxlength="100"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="edit-community-email">
+          メールアドレス
+        </label>
+
+        <input
+          id="edit-community-email"
+          name="email"
+          type="email"
+          maxlength="255"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="edit-community-status">
+          公開状態
+        </label>
+
+        <select
+          id="edit-community-status"
+          name="status"
+          required
+        >
+          <option value="active">
+            公開
+          </option>
+
+          <option value="inactive">
+            非公開
+          </option>
+        </select>
+
+        <p class="form-help-text">
+          非公開にすると、一般向けのコミュニティ一覧には表示されません。
+        </p>
+      </div>
+
+      <div
+        id="community-edit-message"
+        class="message"
+        role="status"
+        aria-live="polite"
+      ></div>
+
+      <div class="modal-actions">
+        <button
+          id="cancel-community-edit-button"
+          class="secondary-button"
+          type="button"
+        >
+          キャンセル
+        </button>
+
+        <button
+          id="save-community-button"
+          class="approve-request-button"
+          type="submit"
+        >
+          保存
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
   <footer class="site-footer">
     <div class="container">
       <p>
