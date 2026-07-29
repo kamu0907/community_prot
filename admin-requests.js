@@ -1,5 +1,5 @@
 const SHOP_REQUESTS_ENDPOINT =
-  "https://tight-snowflake-f83f.kameyama.workers.dev/shop-requests";
+  "https://tight-snowflake-f83f.kameyama.workers.dev/admin/shop-requests";
 
 const APPROVE_REQUEST_ENDPOINT =
   "https://tight-snowflake-f83f.kameyama.workers.dev/admin/shop-requests";
@@ -155,6 +155,14 @@ article.innerHTML = `
   </div>
 
   <dl class="request-detail-list">
+  <div class="request-detail-row">
+    <dt>コミュニティ</dt>
+    <dd>
+      ${escapeHtml(
+        request.communityName || "未設定"
+      )}
+    </dd>
+  </div>
     <div class="request-detail-row">
       <dt>住所</dt>
       <dd>${escapeHtml(request.address || "未入力")}</dd>
@@ -218,6 +226,9 @@ article.innerHTML = `
             type="button"
             data-request-id="${escapeAttribute(
               request.requestId
+            )}"
+            data-community-id="${escapeAttribute(
+              request.communityId || ""
             )}"
             data-shop-name="${escapeAttribute(
               request.shopName || ""
@@ -363,15 +374,18 @@ async function handleRequestListClick(event) {
   if (approveButton) {
     const requestId =
       approveButton.dataset.requestId;
-
+    
+    const communityId =
+      approveButton.dataset.communityId;
+    
     const shopName =
       approveButton.dataset.shopName ||
       "この店舗";
 
-    if (!requestId) {
+    if (!communityId || !requestId) {
       return;
     }
-
+    
     const confirmed =
       window.confirm(
         `${shopName}を承認して、店舗一覧へ公開しますか？`
@@ -382,6 +396,7 @@ async function handleRequestListClick(event) {
     }
 
     await approveShopRequest(
+      communityId,
       requestId,
       approveButton
     );
@@ -409,6 +424,7 @@ async function handleRequestListClick(event) {
   }
 }
 async function approveShopRequest(
+  communityId,
   requestId,
   button
 ) {
@@ -432,18 +448,20 @@ async function approveShopRequest(
 
   try {
     const response = await fetch(
-      `${APPROVE_REQUEST_ENDPOINT}/${encodeURIComponent(
-        requestId
-      )}/approve`,
+      `${APPROVE_REQUEST_ENDPOINT}/approve`,
       {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization:
             `Bearer ${adminToken}`
-        }
+        },
+        body: JSON.stringify({
+          communityId,
+          requestId
+        })
       }
     );
-
     const data =
       await response.json();
 
