@@ -17,17 +17,58 @@ form.addEventListener("submit", async (event) => {
       body: JSON.stringify(payload)
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok || !data.success) throw new Error(data.message || `作成に失敗しました。HTTP ${response.status}`);
-    localStorage.setItem(`communityOwnerToken:${data.community.id}`, data.ownerToken);
+const data = await response.json().catch(() => ({}));
+
+console.log("コミュニティ作成APIレスポンス:", data);
+
+if (!response.ok || !data.success) {
+  throw new Error(
+    data.message ||
+    `作成に失敗しました。HTTP ${response.status}`
+  );
+}
+
+const communityId =
+  data.community?.id ||
+  data.communityId ||
+  data.id ||
+  "";
+
+const ownerToken =
+  data.ownerToken ||
+  data.managementCode ||
+  "";
+
+if (!communityId) {
+  throw new Error(
+    "コミュニティは作成されましたが、コミュニティIDを取得できませんでした。"
+  );
+}
+
+if (ownerToken) {
+  localStorage.setItem(
+    `communityOwnerToken:${communityId}`,
+    ownerToken
+  );
+}
     result.className = "form-result is-success create-result-box";
-    result.innerHTML = `
-      <strong>コミュニティを作成しました。</strong>
-      <span>現在は公開確認待ちです。</span>
-      <dl>
-        <div><dt>コミュニティID</dt><dd><code>${escapeHtml(data.community.id)}</code></dd></div>
-        <div><dt>管理コード</dt><dd><code>${escapeHtml(data.ownerToken)}</code></dd></div>
-      </dl>
-      <span>この管理コードは必ず保存してください。</span>`;
+result.innerHTML = `
+  <strong>コミュニティを作成しました。</strong>
+  <span>現在は公開確認待ちです。</span>
+  <dl>
+    <div>
+      <dt>コミュニティID</dt>
+      <dd><code>${escapeHtml(communityId)}</code></dd>
+    </div>
+    <div>
+      <dt>管理コード</dt>
+      <dd>
+        <code>${escapeHtml(ownerToken || "発行されませんでした")}</code>
+      </dd>
+    </div>
+  </dl>
+  <span>この管理コードは必ず保存してください。</span>
+`;
     form.reset();
   } catch (error) {
     console.error("コミュニティ作成エラー:", error);
