@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#faf6ef" />
+  <meta name="description" content="近くの飲食店の空席状況をリアルタイムで確認できます。" />
+  <title>飲食店コミュニティ｜今入れるお店</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="back-link" href="./index.html">← コミュニティ一覧</a>
+      <p class="eyebrow">RESTAURANT COMMUNITY</p>
+      <h1 id="community-name">飲食店コミュニティ</h1>
+      <p id="community-area" class="community-header-area"></p>
+      <p class="lead">今すぐ入れるお店を、ひと目で。</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="summary-card" aria-label="空席情報の概要">
+      <div class="summary-lead">
+        <p class="summary-label">現在の掲載店舗</p>
+        <p class="summary-value"><span id="shop-count">0</span><span class="summary-unit">店舗</span></p>
+      </div>
+
+      <ul class="summary-stats" aria-label="ステータス別の店舗数">
+        <li class="stat"><span class="stat-dot dot-available"></span><span class="stat-count" id="count-available">0</span><span class="stat-name">空席あり</span></li>
+        <li class="stat"><span class="stat-dot dot-limited"></span><span class="stat-count" id="count-limited">0</span><span class="stat-name">残りわずか</span></li>
+        <li class="stat"><span class="stat-dot dot-full"></span><span class="stat-count" id="count-full">0</span><span class="stat-name">満席</span></li>
+      </ul>
+
+      <button id="reload-button" class="reload-button" type="button">
+        <span class="reload-icon" aria-hidden="true"></span>
+        <span class="reload-text">最新情報に更新</span>
+      </button>
+    </section>
+
+    <section aria-labelledby="shop-list-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">LIVE STATUS</p>
+          <h2 id="shop-list-title">今入れるお店</h2>
+        </div>
+        <p id="last-loaded" class="last-loaded">読み込み中...</p>
+      </div>
+
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+      <div id="shop-list" class="shop-list"></div>
+    </section>
+  </main>
+
+  <template id="shop-card-template">
+    <article class="shop-card">
+      <span class="shop-accent" aria-hidden="true"></span>
+      <div class="shop-card-top">
+        <div>
+          <p class="shop-genre"></p>
+          <h3 class="shop-name"></h3>
+        </div>
+        <span class="status-badge"><span class="status-badge-dot"></span><span class="status-badge-label"></span></span>
+      </div>
+      <div class="shop-info">
+        <p class="shop-note"></p>
+        <p class="shop-updated"></p>
+      </div>
+      <a class="shop-link" href="#" target="_blank" rel="noopener noreferrer">
+        店舗情報を見る <span class="shop-link-arrow" aria-hidden="true">→</span>
+      </a>
+    </article>
+  </template>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>空席情報は店舗からの更新内容をもとに表示しています。</p>
+    </div>
+  </footer>
+
+  <script src="./community.js"></script>
+</body>
+</html>

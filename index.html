@@ -4,110 +4,77 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#faf6ef" />
-  <meta name="description" content="近くの飲食店の空席状況をリアルタイムで確認できます。" />
-  <title>品川飲食コミュニティ｜今入れるお店</title>
+  <meta name="description" content="地域の飲食店コミュニティから、今入れるお店を探せます。" />
+  <title>飲食店コミュニティ一覧</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
 </head>
-<body>
-  <header class="site-header">
+<body class="community-list-page">
+  <header class="site-header list-header">
     <div class="container header-inner">
       <p class="eyebrow">RESTAURANT COMMUNITY</p>
-      <h1 id="community-name">飲食店コミュニティ</h1>
-      <p class="lead">今すぐ入れるお店を、ひと目で。</p>
+      <h1>飲食店コミュニティ</h1>
+      <p class="lead">地域を選んで、今入れるお店を探そう。</p>
     </div>
   </header>
 
-  <main class="container">
-    <section class="summary-card" aria-label="空席情報の概要">
-      <div class="summary-lead">
-        <p class="summary-label">現在の掲載店舗</p>
-        <p class="summary-value"><span id="shop-count">0</span><span class="summary-unit">店舗</span></p>
+  <main class="container list-main">
+    <section class="intro-card">
+      <div>
+        <p class="summary-label">参加コミュニティ</p>
+        <p class="summary-value">
+          <span id="community-count">0</span>
+          <span class="summary-unit">コミュニティ</span>
+        </p>
       </div>
-
-      <ul class="summary-stats" aria-label="ステータス別の店舗数">
-        <li class="stat">
-          <span class="stat-dot dot-available" aria-hidden="true"></span>
-          <span class="stat-count" id="count-available">0</span>
-          <span class="stat-name">空席あり</span>
-        </li>
-        <li class="stat">
-          <span class="stat-dot dot-limited" aria-hidden="true"></span>
-          <span class="stat-count" id="count-limited">0</span>
-          <span class="stat-name">残りわずか</span>
-        </li>
-        <li class="stat">
-          <span class="stat-dot dot-full" aria-hidden="true"></span>
-          <span class="stat-count" id="count-full">0</span>
-          <span class="stat-name">満席</span>
-        </li>
-      </ul>
-
-      <button id="reload-button" class="reload-button" type="button">
-        <span class="reload-icon" aria-hidden="true"></span>
-        <span class="reload-text">最新情報に更新</span>
-      </button>
+      <p class="intro-text">
+        地域の飲食店が空席情報を共有しています。気になるエリアを選択してください。
+      </p>
     </section>
 
-    <section aria-labelledby="shop-list-title">
+    <section aria-labelledby="community-list-title">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">LIVE STATUS</p>
-          <h2 id="shop-list-title">今入れるお店</h2>
+          <p class="eyebrow">COMMUNITIES</p>
+          <h2 id="community-list-title">コミュニティ一覧</h2>
         </div>
-        <p id="last-loaded" class="last-loaded">読み込み中...</p>
       </div>
 
-      <div id="message" class="message" role="status" aria-live="polite"></div>
-      <div id="shop-list" class="shop-list"></div>
-
-      <section class="shop-request-section">
-        <p>掲載を希望する店舗はこちらから申請できます。</p>
-        <a href="./request.html" class="shop-request-button">
-          店舗の掲載を申請する
-        </a>
-      </section>
-
+      <div id="community-message" class="message" role="status" aria-live="polite"></div>
+      <div id="community-list" class="community-grid"></div>
     </section>
   </main>
 
-  <template id="shop-card-template">
-    <article class="shop-card">
-      <span class="shop-accent" aria-hidden="true"></span>
-      <div class="shop-card-top">
-        <div>
-          <p class="shop-genre"></p>
-          <h3 class="shop-name"></h3>
+  <template id="community-card-template">
+    <article class="community-card">
+      <div class="community-card-visual">
+        <span class="community-area-badge"></span>
+        <span class="community-initial" aria-hidden="true"></span>
+      </div>
+      <div class="community-card-body">
+        <p class="community-area"></p>
+        <h2 class="community-name"></h2>
+        <p class="community-description"></p>
+        <div class="community-meta">
+          <span><strong class="community-shop-count">0</strong> 店舗掲載</span>
+          <span class="community-status">公開中</span>
         </div>
-        <span class="status-badge">
-          <span class="status-badge-dot" aria-hidden="true"></span>
-          <span class="status-badge-label"></span>
-        </span>
+        <a class="community-link" href="#">
+          コミュニティを見る
+          <span aria-hidden="true">→</span>
+        </a>
       </div>
-
-      <div class="shop-info">
-        <p class="shop-note"></p>
-        <p class="shop-updated"></p>
-      </div>
-
-      <a class="shop-link" href="#" target="_blank" rel="noopener noreferrer">
-        店舗情報を見る
-        <span class="shop-link-arrow" aria-hidden="true">&rarr;</span>
-      </a>
     </article>
   </template>
 
   <footer class="site-footer">
     <div class="container">
-      <p>空席情報は店舗からの更新内容をもとに表示しています。</p>
+      <p>掲載情報は各コミュニティ・店舗からの更新内容をもとに表示しています。</p>
     </div>
   </footer>
 
-  <script src="./script.js"></script>
+  <script src="./communities.js"></script>
 </body>
 </html>

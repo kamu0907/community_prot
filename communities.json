@@ -1,0 +1,13 @@
+{
+  "communities": [
+    {
+      "id": "shinagawa",
+      "name": "品川飲食コミュニティ",
+      "area": "品川・北品川・新馬場",
+      "description": "品川エリアの飲食店が、リアルタイムの空席情報を共有しています。",
+      "shopCount": 2,
+      "status": "active",
+      "apiUrl": "https://tight-snowflake-f83f.kameyama.workers.dev/status"
+    }
+  ]
+}
