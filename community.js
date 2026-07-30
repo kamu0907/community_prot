@@ -567,12 +567,12 @@ function getEffectiveStatus(shop) {
     1000 /
     60;
 
-  if (
-    elapsedMinutes >=
-    STALE_MINUTES
-  ) {
-    return "unknown";
-  }
+  // if (
+  //   elapsedMinutes >=
+  //   STALE_MINUTES
+  // ) {
+  //   return "unknown";
+  // }
 
   return STATUS_CONFIG[shop.status]
     ? shop.status
