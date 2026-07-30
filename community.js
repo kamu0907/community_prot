@@ -767,12 +767,14 @@ function render(data) {
     selectedCommunity?.name ||
     "飲食店コミュニティ";
 
-  communityNameElement.textContent =
-    communityName;
-
-  communityAreaElement.textContent =
-    selectedCommunity?.area || "";
-
+    communityNameElement.textContent =
+      communityName;
+    
+    if (communityAreaElement) {
+      communityAreaElement.textContent =
+        selectedCommunity?.area || "";
+    }
+  
   document.title =
     `${communityName}｜今入れるお店`;
 
