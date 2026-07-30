@@ -696,21 +696,12 @@ function createShopCard(shop) {
     );
   }
 
-  const notificationButton =
-    createNotificationButton(
-      shop.id
-    );
+const notificationButton =
+  createNotificationButton(shop.id);
 
-  /*
-   * 店舗リンクの直前に
-   * 通知ボタンを追加する。
-   */
-  shopLink.parentNode.insertBefore(
-    notificationButton,
-    shopLink
-  );
+card.appendChild(notificationButton);
 
-  return fragment;
+return fragment;
 }
 
 function renderSkeletons() {
