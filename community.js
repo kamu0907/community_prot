@@ -941,5 +941,4 @@ async function initialize() {
    */
   await loadStatus();
 }
-
 initialize();
