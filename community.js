@@ -214,7 +214,9 @@ async function processLineLoginCallback() {
   }
 }
 
-function normalizeSubscriptions(data) {
+function normalizeSubscriptions(response) {
+  const data = response?.data ?? response;
+
   if (Array.isArray(data)) {
     return data;
   }
