@@ -183,13 +183,18 @@ async function processLineLoginCallback() {
       );
     }
 
-    if (!data.sessionToken) {
+    const responseData =
+      data.data || data;
+    
+    if (!responseData.sessionToken) {
       throw new Error(
         "通知登録APIからsessionTokenが返されませんでした。"
       );
     }
-
-    saveSessionToken(data.sessionToken);
+    
+    saveSessionToken(
+      responseData.sessionToken
+    );
     subscribedShopIds.add(shopId);
 
     showMessage(
