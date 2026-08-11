@@ -1164,7 +1164,9 @@ function createShopCard(shop) {
     template.content.cloneNode(true);
 
   const card =
-    fragment.querySelector(".shop-card");
+    fragment.querySelector(
+      ".shop-card"
+    );
 
   const effectiveStatus =
     getEffectiveStatus(shop);
@@ -1176,53 +1178,60 @@ function createShopCard(shop) {
 
   const statusBadge =
     fragment.querySelector(
-      ".shop-status-badge"
+      ".status-badge"
+    );
+
+  const statusBadgeLabel =
+    fragment.querySelector(
+      ".status-badge-label"
     );
 
   const businessState =
     getBusinessState(shop);
-  
+
   const businessBadge =
     fragment.querySelector(
       ".shop-business-badge"
     );
-  
-  businessBadge.textContent =
-    businessState.label;
-  
-  businessBadge.classList.add(
-    businessState.className
-  );
-  
-  statusBadge.className =
-    `shop-status-badge ${config.className}`;
-  
+
+  const businessHours =
+    fragment.querySelector(
+      ".shop-business-hours"
+    );
+
   fragment.querySelector(
     ".shop-name"
   ).textContent =
     shop.name;
-  
+
   fragment.querySelector(
     ".shop-genre"
   ).textContent =
     shop.genre || "";
-  
+
+  businessBadge.textContent =
+    businessState.label;
+
+  businessBadge.className =
+    `shop-business-badge ${businessState.className}`;
+
   businessHours.textContent =
     businessState.hoursLabel || "";
-  
+
+  statusBadge.className =
+    `status-badge ${config.className}`;
+
+  statusBadgeLabel.textContent =
+    config.label;
+
   /*
    * 営業していない場合は
    * 空席状況を表示しない
    */
-  if (
+  statusBadge.hidden =
     businessState.configured &&
-    !businessState.isOpen
-  ) {
-    statusBadge.hidden = true;
-  } else {
-    statusBadge.hidden = false;
-  }
-
+    !businessState.isOpen;
+  
   fragment.querySelector(
     ".status-badge-label"
   ).textContent =
