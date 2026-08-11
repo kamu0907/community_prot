@@ -962,20 +962,31 @@ function getBusinessState(
       now >= window.start &&
       now < window.end
     ) {
+      const temporary =
+        schedule.type ===
+        "exception-open";
+    
       return {
         configured: true,
-        isOpen: false,
+        isOpen: true,
     
         label:
-          "営業開始待ち",
+          temporary
+            ? "臨時営業中"
+            : "営業中",
     
         className:
-          "business-temporary",
+          temporary
+            ? "business-temporary"
+            : "business-open",
     
         hoursLabel:
           formatBusinessHours(
             schedule.hours
-          )
+          ),
+    
+        note:
+          schedule.note || ""
       };
     }
   }
