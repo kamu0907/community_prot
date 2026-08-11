@@ -1173,34 +1173,6 @@ function createShopCard(shop) {
 
   const businessState =
     getBusinessState(shop);
-
-  const config =
-    STATUS_CONFIG[
-      effectiveStatus
-    ];
-
-  card.classList.add(
-    `is-${effectiveStatus}`
-  );
-
-  fragment.querySelector(
-    ".shop-genre"
-  ).textContent =
-    shop.genre || "飲食店";
-
-  fragment.querySelector(
-    ".shop-name"
-  ).textContent =
-    shop.name || "店舗名未設定";
-
-  const statusBadge =
-    fragment.querySelector(
-      ".status-badge"
-    );
-
-  statusBadge.classList.add(
-    config.className
-  );
   
   const businessBadge =
     fragment.querySelector(
@@ -1220,20 +1192,21 @@ function createShopCard(shop) {
     );
   
   businessHours.textContent =
-    businessState.hoursLabel;
+    businessState.hoursLabel || "";
   
   /*
-   * 営業時間設定済みで
-   * 現在営業していない場合は、
-   * 古い空席情報を見せない。
+   * 営業していない場合は
+   * 空席状況を表示しない
    */
   if (
     businessState.configured &&
     !businessState.isOpen
   ) {
     statusBadge.hidden = true;
+  } else {
+    statusBadge.hidden = false;
   }
-  
+
   fragment.querySelector(
     ".status-badge-label"
   ).textContent =
