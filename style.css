@@ -1603,3 +1603,7 @@ main {
   color: var(--unknown-text);
   background: var(--unknown-bg);
 }
+
+.status-badge[hidden] {
+  display: none !important;
+}
