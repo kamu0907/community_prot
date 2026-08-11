@@ -863,7 +863,59 @@ function getBusinessState(
     getTokyoDateString(
       now
     );
-
+  const manualStatus =
+    shop.businessStatus;
+  
+  if (
+    manualStatus?.date === today
+  ) {
+    if (
+      manualStatus.status ===
+      "closed"
+    ) {
+      return {
+        configured: true,
+        isOpen: false,
+        label:
+          "営業終了",
+        className:
+          "business-closed",
+        hoursLabel: ""
+      };
+    }
+  
+    if (
+      manualStatus.status ===
+      "open"
+    ) {
+      const todaySchedule =
+        getScheduleForDate(
+          shop,
+          today
+        );
+  
+      return {
+        configured: true,
+        isOpen: true,
+        label:
+          todaySchedule.type ===
+          "exception-open"
+            ? "臨時営業中"
+            : "営業中",
+        className:
+          todaySchedule.type ===
+          "exception-open"
+            ? "business-temporary"
+            : "business-open",
+        hoursLabel:
+          todaySchedule.hours
+            ? formatBusinessHours(
+                todaySchedule.hours
+              )
+            : ""
+      };
+    }
+  }
   const yesterday =
     shiftDate(
       today,
@@ -910,31 +962,20 @@ function getBusinessState(
       now >= window.start &&
       now < window.end
     ) {
-      const temporary =
-        schedule.type ===
-        "exception-open";
-
       return {
         configured: true,
-        isOpen: true,
-
+        isOpen: false,
+    
         label:
-          temporary
-            ? "臨時営業中"
-            : "営業中",
-
+          "営業開始待ち",
+    
         className:
-          temporary
-            ? "business-temporary"
-            : "business-open",
-
+          "business-temporary",
+    
         hoursLabel:
           formatBusinessHours(
             schedule.hours
-          ),
-
-        note:
-          schedule.note || ""
+          )
       };
     }
   }
