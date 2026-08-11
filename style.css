@@ -1556,3 +1556,50 @@ main {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   公開画面 営業状態
+   ========================================================= */
+
+.shop-business-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.shop-business-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.shop-business-hours {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.business-open {
+  color: #24603f;
+  background: #eaf5ed;
+}
+
+.business-closed {
+  color: #666666;
+  background: #eeeeee;
+}
+
+.business-temporary {
+  color: #8a651f;
+  background: #f8eed6;
+}
+
+.business-unknown {
+  color: var(--unknown-text);
+  background: var(--unknown-bg);
+}
