@@ -82,6 +82,31 @@ const editShopStatusInput =
     "#edit-shop-status"
   );
 
+const editShopOpenTimeInput =
+  document.querySelector(
+    "#edit-shop-open-time"
+  );
+
+const editShopCloseTimeInput =
+  document.querySelector(
+    "#edit-shop-close-time"
+  );
+
+const businessDayInputs =
+  document.querySelectorAll(
+    'input[name="businessDay"]'
+  );
+
+const businessExceptionList =
+  document.querySelector(
+    "#business-exception-list"
+  );
+
+const addBusinessExceptionButton =
+  document.querySelector(
+    "#add-business-exception-button"
+  );
+
 const saveButton =
   document.querySelector(
     "#save-shop-button"
@@ -474,6 +499,229 @@ function findShop(shopId) {
   );
 }
 
+function addBusinessExceptionRow(
+  exception = {}
+) {
+  const row =
+    document.createElement("div");
+
+  row.className =
+    "business-exception-row";
+
+  const type =
+    exception.type === "open"
+      ? "open"
+      : "closed";
+
+  row.innerHTML = `
+    <div class="business-exception-main">
+      <div class="form-group">
+        <label>日付</label>
+        <input
+          class="form-control business-exception-date"
+          type="date"
+          value="${escapeAttribute(
+            exception.date || ""
+          )}"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>設定</label>
+
+        <select
+          class="form-control business-exception-type"
+        >
+          <option
+            value="closed"
+            ${
+              type === "closed"
+                ? "selected"
+                : ""
+            }
+          >
+            臨時休業
+          </option>
+
+          <option
+            value="open"
+            ${
+              type === "open"
+                ? "selected"
+                : ""
+            }
+          >
+            臨時営業
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="business-exception-hours">
+      <div class="form-group">
+        <label>営業開始</label>
+        <input
+          class="form-control business-exception-open"
+          type="time"
+          value="${escapeAttribute(
+            exception.hours?.open || ""
+          )}"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>営業終了</label>
+        <input
+          class="form-control business-exception-close"
+          type="time"
+          value="${escapeAttribute(
+            exception.hours?.close || ""
+          )}"
+        />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>備考</label>
+
+      <input
+        class="form-control business-exception-note"
+        type="text"
+        maxlength="100"
+        placeholder="例：お盆休み"
+        value="${escapeAttribute(
+          exception.note || ""
+        )}"
+      />
+    </div>
+
+    <button
+      type="button"
+      class="remove-business-exception-button"
+    >
+      削除
+    </button>
+  `;
+
+  businessExceptionList.appendChild(
+    row
+  );
+
+  updateBusinessExceptionRow(
+    row
+  );
+}
+
+
+function updateBusinessExceptionRow(
+  row
+) {
+  if (!row) {
+    return;
+  }
+
+  const type =
+    row.querySelector(
+      ".business-exception-type"
+    ).value;
+
+  const hours =
+    row.querySelector(
+      ".business-exception-hours"
+    );
+
+  hours.hidden =
+    type !== "open";
+}
+
+
+function getBusinessExceptions() {
+  return [
+    ...businessExceptionList.querySelectorAll(
+      ".business-exception-row"
+    )
+  ].map((row) => {
+    const type =
+      row.querySelector(
+        ".business-exception-type"
+      ).value;
+
+    const exception = {
+      date:
+        row.querySelector(
+          ".business-exception-date"
+        ).value,
+
+      type,
+
+      note:
+        row.querySelector(
+          ".business-exception-note"
+        ).value.trim()
+    };
+
+    if (type === "open") {
+      exception.hours = {
+        open:
+          row.querySelector(
+            ".business-exception-open"
+          ).value,
+
+        close:
+          row.querySelector(
+            ".business-exception-close"
+          ).value
+      };
+    }
+
+    return exception;
+  });
+}
+
+
+function validateBusinessSchedule(
+  exceptions
+) {
+  const dates =
+    exceptions
+      .map(
+        (item) => item.date
+      )
+      .filter(Boolean);
+
+  if (
+    dates.length !==
+    new Set(dates).size
+  ) {
+    return (
+      "同じ日付の臨時設定が複数あります。"
+    );
+  }
+
+  for (const exception of exceptions) {
+    if (!exception.date) {
+      return (
+        "臨時設定の日付を入力してください。"
+      );
+    }
+
+    if (
+      exception.type === "open" &&
+      (
+        !exception.hours?.open ||
+        !exception.hours?.close
+      )
+    ) {
+      return (
+        `${exception.date} の臨時営業の営業時間を入力してください。`
+      );
+    }
+  }
+
+  return "";
+}
+
 function openEditModal(shop) {
   editShopIdInput.value =
     shop.id || "";
@@ -493,6 +741,52 @@ function openEditModal(shop) {
   editShopStatusInput.value =
     shop.status ||
     "available";
+
+  const businessSchedule =
+  shop.businessSchedule || {};
+
+  const regular =
+    businessSchedule.regular || {};
+  
+  const regularDays =
+    Array.isArray(
+      regular.days
+    )
+      ? regular.days
+      : [];
+  
+  businessDayInputs.forEach(
+    (input) => {
+      input.checked =
+        regularDays.includes(
+          input.value
+        );
+    }
+  );
+  
+  editShopOpenTimeInput.value =
+    regular.hours?.open || "";
+  
+  editShopCloseTimeInput.value =
+    regular.hours?.close || "";
+  
+  businessExceptionList.innerHTML =
+    "";
+  
+  const exceptions =
+    Array.isArray(
+      businessSchedule.exceptions
+    )
+      ? businessSchedule.exceptions
+      : [];
+  
+  exceptions.forEach(
+    (exception) => {
+      addBusinessExceptionRow(
+        exception
+      );
+    }
+  );
 
   modal.hidden = false;
 
@@ -543,6 +837,22 @@ async function handleEditSubmit(
   saveButton.textContent =
     "保存中...";
 
+  const businessExceptions =
+    getBusinessExceptions();
+  
+  const businessScheduleError =
+    validateBusinessSchedule(
+      businessExceptions
+    );
+  
+  if (businessScheduleError) {
+    window.alert(
+      businessScheduleError
+    );
+  
+    return;
+  }
+  
   try {
     const response =
       await fetch(
@@ -585,7 +895,36 @@ async function handleEditSubmit(
 
             status:
               editShopStatusInput
-                .value
+                .value,
+
+            businessSchedule: {
+              regular: {
+                days: [
+                  ...businessDayInputs
+                ]
+                  .filter(
+                    (input) =>
+                      input.checked
+                  )
+                  .map(
+                    (input) =>
+                      input.value
+                  ),
+            
+                hours: {
+                  open:
+                    editShopOpenTimeInput
+                      .value,
+            
+                  close:
+                    editShopCloseTimeInput
+                      .value
+                }
+              },
+            
+              exceptions:
+                businessExceptions
+            }
           })
         }
       );
@@ -826,5 +1165,51 @@ function escapeAttribute(
 ) {
   return escapeHtml(value);
 }
+
+addBusinessExceptionButton.addEventListener(
+  "click",
+  () => {
+    addBusinessExceptionRow();
+  }
+);
+
+businessExceptionList.addEventListener(
+  "click",
+  (event) => {
+    const removeButton =
+      event.target.closest(
+        ".remove-business-exception-button"
+      );
+
+    if (!removeButton) {
+      return;
+    }
+
+    removeButton
+      .closest(
+        ".business-exception-row"
+      )
+      ?.remove();
+  }
+);
+
+businessExceptionList.addEventListener(
+  "change",
+  (event) => {
+    if (
+      !event.target.classList.contains(
+        "business-exception-type"
+      )
+    ) {
+      return;
+    }
+
+    updateBusinessExceptionRow(
+      event.target.closest(
+        ".business-exception-row"
+      )
+    );
+  }
+);
 
 loadCommunities();
