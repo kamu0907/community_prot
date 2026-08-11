@@ -787,17 +787,25 @@ function openEditModal(shop) {
       );
     }
   );
-
   modal.hidden = false;
-
+  
+  modal.classList.add(
+    "is-open"
+  );
+  
   document.body.classList.add(
     "modal-open"
   );
-
+  
   editShopNameInput.focus();
+  
 }
 
 function closeEditModal() {
+  modal.classList.remove(
+    "is-open"
+  );
+
   modal.hidden = true;
 
   document.body.classList.remove(
