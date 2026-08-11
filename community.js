@@ -873,6 +873,12 @@ function getBusinessState(
       manualStatus.status ===
       "closed"
     ) {
+      const todaySchedule =
+        getScheduleForDate(
+          shop,
+          today
+        );
+    
       return {
         configured: true,
         isOpen: false,
@@ -880,10 +886,20 @@ function getBusinessState(
           "営業終了",
         className:
           "business-closed",
-        hoursLabel: ""
+    
+        hoursLabel:
+          todaySchedule
+            .isScheduledOpen
+            ? formatBusinessHours(
+                todaySchedule.hours
+              )
+            : "",
+    
+        note:
+          todaySchedule.note || ""
       };
     }
-  
+    
     if (
       manualStatus.status ===
       "open"
@@ -1012,12 +1028,12 @@ function getBusinessState(
         "臨時休業",
       className:
         "business-closed",
-      hoursLabel:
-        todaySchedule.note ||
-        ""
+      hoursLabel: "",
+      note:
+        todaySchedule.note || ""
     };
   }
-
+  
   if (
     todaySchedule.type ===
     "regular-closed"
@@ -1216,8 +1232,10 @@ function createShopCard(shop) {
     `shop-business-badge ${businessState.className}`;
 
   businessHours.textContent =
-    businessState.hoursLabel || "";
-
+    businessState.hoursLabel
+      ? `本日の営業時間 ${businessState.hoursLabel}`
+      : "";
+  
   statusBadge.className =
     `status-badge ${config.className}`;
 
@@ -1240,11 +1258,13 @@ function createShopCard(shop) {
   fragment.querySelector(
     ".shop-note"
   ).textContent =
-    effectiveStatus === "unknown"
-      ? "最新の空席状況は店舗へご確認ください。"
-      : shop.note ||
-        "店舗からの補足情報はありません。";
-
+    businessState.note ||
+    (
+      effectiveStatus === "unknown"
+        ? "最新の空席状況は店舗へご確認ください。"
+        : shop.note ||
+          "店舗からの補足情報はありません。"
+    );
   fragment.querySelector(
     ".shop-updated"
   ).textContent =
