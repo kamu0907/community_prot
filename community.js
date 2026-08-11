@@ -859,35 +859,65 @@ function getBusinessState(
     };
   }
 
-const today =
-  getTokyoDateString(
-    now
-  );
+  const today =
+    getTokyoDateString(
+      now
+    );
 
-const manualStatus =
-  shop.businessStatus;
+  /*
+   * 今日の営業予定を先に取得
+   */
+  const todaySchedule =
+    getScheduleForDate(
+      shop,
+      today
+    );
 
-if (
-  manualStatus?.date === today
-) {
+  /*
+   * 臨時休業は
+   * 手動の営業終了より優先
+   */
   if (
+    todaySchedule.type ===
+    "exception-closed"
+  ) {
+    return {
+      configured: true,
+      isOpen: false,
+
+      label:
+        "臨時休業",
+
+      className:
+        "business-closed",
+
+      hoursLabel: "",
+
+      note:
+        todaySchedule.note || ""
+    };
+  }
+
+  const manualStatus =
+    shop.businessStatus;
+
+  if (
+    manualStatus?.date === today
+  ) {
+    if (
       manualStatus.status ===
       "closed"
     ) {
-      const todaySchedule =
-        getScheduleForDate(
-          shop,
-          today
-        );
-    
       return {
         configured: true,
         isOpen: false,
+
         label:
           "営業終了",
+
         className:
           "business-closed",
-    
+
         hoursLabel:
           todaySchedule
             .isScheduledOpen
@@ -895,41 +925,41 @@ if (
                 todaySchedule.hours
               )
             : "",
-    
+
         note:
           todaySchedule.note || ""
       };
     }
-    
+
     if (
       manualStatus.status ===
       "open"
     ) {
-      const todaySchedule =
-        getScheduleForDate(
-          shop,
-          today
-        );
-  
       return {
         configured: true,
         isOpen: true,
+
         label:
           todaySchedule.type ===
           "exception-open"
             ? "臨時営業中"
             : "営業中",
+
         className:
           todaySchedule.type ===
           "exception-open"
             ? "business-temporary"
             : "business-open",
+
         hoursLabel:
           todaySchedule.hours
             ? formatBusinessHours(
                 todaySchedule.hours
               )
-            : ""
+            : "",
+
+        note:
+          todaySchedule.note || ""
       };
     }
   }
@@ -1006,33 +1036,6 @@ if (
           schedule.note || ""
       };
     }
-  }
-
-  /*
-   * 現在営業中でなければ
-   * 今日の予定を表示する。
-   */
-  const todaySchedule =
-    getScheduleForDate(
-      shop,
-      today
-    );
-
-  if (
-    todaySchedule.type ===
-    "exception-closed"
-  ) {
-    return {
-      configured: true,
-      isOpen: false,
-      label:
-        "臨時休業",
-      className:
-        "business-closed",
-      hoursLabel: "",
-      note:
-        todaySchedule.note || ""
-    };
   }
   
   if (
