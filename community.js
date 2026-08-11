@@ -859,17 +859,18 @@ function getBusinessState(
     };
   }
 
-  const today =
-    getTokyoDateString(
-      now
-    );
-  const manualStatus =
-    shop.businessStatus;
-  
+const today =
+  getTokyoDateString(
+    now
+  );
+
+const manualStatus =
+  shop.businessStatus;
+
+if (
+  manualStatus?.date === today
+) {
   if (
-    manualStatus?.date === today
-  ) {
-    if (
       manualStatus.status ===
       "closed"
     ) {
