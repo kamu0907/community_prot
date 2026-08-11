@@ -1164,12 +1164,20 @@ function createShopCard(shop) {
     template.content.cloneNode(true);
 
   const card =
-    fragment.querySelector(
-      ".shop-card"
-    );
+    fragment.querySelector(".shop-card");
 
   const effectiveStatus =
     getEffectiveStatus(shop);
+
+  const config =
+    STATUS_CONFIG[
+      effectiveStatus
+    ];
+
+  const statusBadge =
+    fragment.querySelector(
+      ".shop-status-badge"
+    );
 
   const businessState =
     getBusinessState(shop);
@@ -1186,10 +1194,18 @@ function createShopCard(shop) {
     businessState.className
   );
   
-  const businessHours =
-    fragment.querySelector(
-      ".shop-business-hours"
-    );
+  statusBadge.className =
+    `shop-status-badge ${config.className}`;
+  
+  fragment.querySelector(
+    ".shop-name"
+  ).textContent =
+    shop.name;
+  
+  fragment.querySelector(
+    ".shop-genre"
+  ).textContent =
+    shop.genre || "";
   
   businessHours.textContent =
     businessState.hoursLabel || "";
