@@ -214,6 +214,142 @@
           </select>
         </div>
 
+        <!-- =====================================================
+             基本営業
+             ===================================================== -->
+        <div class="business-schedule-section">
+          <h3 class="business-schedule-title">
+            基本営業
+          </h3>
+        
+          <div class="form-group">
+            <label>
+              営業日
+            </label>
+        
+            <div class="business-days-checkboxes">
+              <label>
+                <input
+                  type="checkbox"
+                  name="businessDay"
+                  value="mon"
+                />
+                月
+              </label>
+        
+              <label>
+                <input
+                  type="checkbox"
+                  name="businessDay"
+                  value="tue"
+                />
+                火
+              </label>
+        
+              <label>
+                <input
+                  type="checkbox"
+                  name="businessDay"
+                  value="wed"
+                />
+                水
+              </label>
+        
+              <label>
+                <input
+                  type="checkbox"
+                  name="businessDay"
+                  value="thu"
+                />
+                木
+              </label>
+        
+              <label>
+                <input
+                  type="checkbox"
+                  name="businessDay"
+                  value="fri"
+                />
+                金
+              </label>
+        
+              <label>
+                <input
+                  type="checkbox"
+                  name="businessDay"
+                  value="sat"
+                />
+                土
+              </label>
+        
+              <label>
+                <input
+                  type="checkbox"
+                  name="businessDay"
+                  value="sun"
+                />
+                日
+              </label>
+            </div>
+          </div>
+        
+          <div class="business-hours-row">
+            <div class="form-group">
+              <label for="edit-shop-open-time">
+                営業開始
+              </label>
+        
+              <input
+                id="edit-shop-open-time"
+                class="form-control"
+                type="time"
+              />
+            </div>
+        
+            <div class="form-group">
+              <label for="edit-shop-close-time">
+                営業終了
+              </label>
+        
+              <input
+                id="edit-shop-close-time"
+                class="form-control"
+                type="time"
+              />
+            </div>
+          </div>
+        </div>
+        
+        <!-- =====================================================
+             臨時営業・臨時休業
+             ===================================================== -->
+        <div class="business-schedule-section">
+          <div class="business-schedule-header">
+            <div>
+              <h3 class="business-schedule-title">
+                臨時営業・臨時休業
+              </h3>
+        
+              <p class="form-help-text">
+                日付指定の設定は基本営業より優先されます。
+              </p>
+            </div>
+        
+            <button
+              id="add-business-exception-button"
+              class="secondary-button"
+              type="button"
+            >
+              ＋ 臨時設定を追加
+            </button>
+          </div>
+        
+          <div
+            id="business-exception-list"
+            class="business-exception-list"
+          ></div>
+        </div>
+
         <div class="request-actions">
           <button
             type="button"
