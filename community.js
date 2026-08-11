@@ -547,6 +547,491 @@ async function getCommunityConfig() {
   );
 }
 
+const BUSINESS_DAY_KEYS = [
+  "sun",
+  "mon",
+  "tue",
+  "wed",
+  "thu",
+  "fri",
+  "sat"
+];
+
+function getTokyoDateString(
+  date = new Date()
+) {
+  const formatter =
+    new Intl.DateTimeFormat(
+      "en-US",
+      {
+        timeZone:
+          "Asia/Tokyo",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }
+    );
+
+  const parts =
+    formatter.formatToParts(
+      date
+    );
+
+  const values =
+    Object.fromEntries(
+      parts.map(
+        (part) => [
+          part.type,
+          part.value
+        ]
+      )
+    );
+
+  return (
+    `${values.year}-` +
+    `${values.month}-` +
+    `${values.day}`
+  );
+}
+
+
+function shiftDate(
+  dateText,
+  days
+) {
+  const [
+    year,
+    month,
+    day
+  ] =
+    dateText
+      .split("-")
+      .map(Number);
+
+  const date =
+    new Date(
+      Date.UTC(
+        year,
+        month - 1,
+        day + days
+      )
+    );
+
+  return [
+    date.getUTCFullYear(),
+    String(
+      date.getUTCMonth() + 1
+    ).padStart(2, "0"),
+    String(
+      date.getUTCDate()
+    ).padStart(2, "0")
+  ].join("-");
+}
+
+
+function getWeekdayKey(
+  dateText
+) {
+  const date =
+    new Date(
+      `${dateText}T12:00:00Z`
+    );
+
+  return (
+    BUSINESS_DAY_KEYS[
+      date.getUTCDay()
+    ]
+  );
+}
+
+
+function isValidBusinessTime(
+  value
+) {
+  return (
+    /^([01]\d|2[0-3]):[0-5]\d$/.test(
+      String(value || "")
+    )
+  );
+}
+
+
+function getScheduleForDate(
+  shop,
+  dateText
+) {
+  const schedule =
+    shop.businessSchedule;
+
+  if (!schedule) {
+    return {
+      configured: false
+    };
+  }
+
+  const regular =
+    schedule.regular || {};
+
+  const exceptions =
+    Array.isArray(
+      schedule.exceptions
+    )
+      ? schedule.exceptions
+      : [];
+
+  const exception =
+    exceptions.find(
+      (item) =>
+        item.date ===
+        dateText
+    );
+
+  /*
+   * 臨時設定を最優先
+   */
+  if (exception) {
+
+    if (
+      exception.type ===
+      "closed"
+    ) {
+      return {
+        configured: true,
+        isScheduledOpen:
+          false,
+        type:
+          "exception-closed",
+        note:
+          exception.note || ""
+      };
+    }
+
+    if (
+      exception.type ===
+      "open"
+    ) {
+      return {
+        configured: true,
+        isScheduledOpen:
+          true,
+        type:
+          "exception-open",
+        note:
+          exception.note || "",
+        hours:
+          exception.hours ||
+          regular.hours ||
+          {}
+      };
+    }
+  }
+
+  const days =
+    Array.isArray(
+      regular.days
+    )
+      ? regular.days
+      : [];
+
+  const weekday =
+    getWeekdayKey(
+      dateText
+    );
+
+  if (
+    !days.includes(
+      weekday
+    )
+  ) {
+    return {
+      configured: true,
+      isScheduledOpen:
+        false,
+      type:
+        "regular-closed"
+    };
+  }
+
+  return {
+    configured: true,
+    isScheduledOpen:
+      true,
+    type:
+      "regular-open",
+    hours:
+      regular.hours || {}
+  };
+}
+
+
+function createBusinessWindow(
+  dateText,
+  hours
+) {
+  const open =
+    String(
+      hours?.open || ""
+    );
+
+  const close =
+    String(
+      hours?.close || ""
+    );
+
+  if (
+    !isValidBusinessTime(open) ||
+    !isValidBusinessTime(close)
+  ) {
+    return null;
+  }
+
+  const closeDate =
+    close <= open
+      ? shiftDate(
+          dateText,
+          1
+        )
+      : dateText;
+
+  return {
+    start:
+      new Date(
+        `${dateText}T${open}:00+09:00`
+      ),
+
+    end:
+      new Date(
+        `${closeDate}T${close}:00+09:00`
+      ),
+
+    open,
+    close
+  };
+}
+
+
+function formatBusinessHours(
+  hours
+) {
+  const open =
+    String(
+      hours?.open || ""
+    );
+
+  const close =
+    String(
+      hours?.close || ""
+    );
+
+  if (
+    !isValidBusinessTime(open) ||
+    !isValidBusinessTime(close)
+  ) {
+    return "";
+  }
+
+  const closeLabel =
+    close <= open
+      ? `翌${close}`
+      : close;
+
+  return (
+    `${open}〜${closeLabel}`
+  );
+}
+
+
+function getBusinessState(
+  shop,
+  now = new Date()
+) {
+  if (
+    !shop.businessSchedule
+  ) {
+    return {
+      configured: false,
+      isOpen: true,
+      label:
+        "営業時間未設定",
+      className:
+        "business-unknown",
+      hoursLabel: ""
+    };
+  }
+
+  const today =
+    getTokyoDateString(
+      now
+    );
+
+  const yesterday =
+    shiftDate(
+      today,
+      -1
+    );
+
+  /*
+   * まず今日と昨日の営業枠を見る。
+   *
+   * 18:00〜02:00 の場合、
+   * 01:00は前日の営業として判定する。
+   */
+  for (
+    const businessDate
+    of [
+      today,
+      yesterday
+    ]
+  ) {
+    const schedule =
+      getScheduleForDate(
+        shop,
+        businessDate
+      );
+
+    if (
+      !schedule.configured ||
+      !schedule.isScheduledOpen
+    ) {
+      continue;
+    }
+
+    const window =
+      createBusinessWindow(
+        businessDate,
+        schedule.hours
+      );
+
+    if (!window) {
+      continue;
+    }
+
+    if (
+      now >= window.start &&
+      now < window.end
+    ) {
+      const temporary =
+        schedule.type ===
+        "exception-open";
+
+      return {
+        configured: true,
+        isOpen: true,
+
+        label:
+          temporary
+            ? "臨時営業中"
+            : "営業中",
+
+        className:
+          temporary
+            ? "business-temporary"
+            : "business-open",
+
+        hoursLabel:
+          formatBusinessHours(
+            schedule.hours
+          ),
+
+        note:
+          schedule.note || ""
+      };
+    }
+  }
+
+  /*
+   * 現在営業中でなければ
+   * 今日の予定を表示する。
+   */
+  const todaySchedule =
+    getScheduleForDate(
+      shop,
+      today
+    );
+
+  if (
+    todaySchedule.type ===
+    "exception-closed"
+  ) {
+    return {
+      configured: true,
+      isOpen: false,
+      label:
+        "臨時休業",
+      className:
+        "business-closed",
+      hoursLabel:
+        todaySchedule.note ||
+        ""
+    };
+  }
+
+  if (
+    todaySchedule.type ===
+    "regular-closed"
+  ) {
+    return {
+      configured: true,
+      isOpen: false,
+      label:
+        "本日定休日",
+      className:
+        "business-closed",
+      hoursLabel: ""
+    };
+  }
+
+  if (
+    todaySchedule.isScheduledOpen
+  ) {
+    const hoursLabel =
+      formatBusinessHours(
+        todaySchedule.hours
+      );
+
+    if (!hoursLabel) {
+      return {
+        configured: true,
+        isOpen: false,
+        label:
+          "営業時間未設定",
+        className:
+          "business-unknown",
+        hoursLabel: ""
+      };
+    }
+
+    return {
+      configured: true,
+      isOpen: false,
+
+      label:
+        todaySchedule.type ===
+        "exception-open"
+          ? "本日臨時営業"
+          : "営業時間外",
+
+      className:
+        todaySchedule.type ===
+        "exception-open"
+          ? "business-temporary"
+          : "business-closed",
+
+      hoursLabel
+    };
+  }
+
+  return {
+    configured: true,
+    isOpen: false,
+    label:
+      "本日定休日",
+    className:
+      "business-closed",
+    hoursLabel: ""
+  };
+}
+
 function getEffectiveStatus(shop) {
   const updatedAt =
     new Date(shop.updatedAt);
@@ -634,6 +1119,9 @@ function createShopCard(shop) {
   const effectiveStatus =
     getEffectiveStatus(shop);
 
+  const businessState =
+    getBusinessState(shop);
+
   const config =
     STATUS_CONFIG[
       effectiveStatus
@@ -661,7 +1149,39 @@ function createShopCard(shop) {
   statusBadge.classList.add(
     config.className
   );
-
+  
+  const businessBadge =
+    fragment.querySelector(
+      ".shop-business-badge"
+    );
+  
+  businessBadge.textContent =
+    businessState.label;
+  
+  businessBadge.classList.add(
+    businessState.className
+  );
+  
+  const businessHours =
+    fragment.querySelector(
+      ".shop-business-hours"
+    );
+  
+  businessHours.textContent =
+    businessState.hoursLabel;
+  
+  /*
+   * 営業時間設定済みで
+   * 現在営業していない場合は、
+   * 古い空席情報を見せない。
+   */
+  if (
+    businessState.configured &&
+    !businessState.isOpen
+  ) {
+    statusBadge.hidden = true;
+  }
+  
   fragment.querySelector(
     ".status-badge-label"
   ).textContent =
@@ -750,11 +1270,29 @@ function updateSummary(shops) {
   };
 
   shops.forEach((shop) => {
+    const businessState =
+      getBusinessState(shop);
+  
+    /*
+     * 営業時間設定済みで
+     * 現在営業していない店舗は
+     * 空席集計から除外。
+     *
+     * 営業時間未設定の既存店舗は
+     * 従来通り集計する。
+     */
+    if (
+      businessState.configured &&
+      !businessState.isOpen
+    ) {
+      return;
+    }
+  
     counts[
       getEffectiveStatus(shop)
     ] += 1;
   });
-
+  
   shopCountElement.textContent =
     shops.length;
 
@@ -809,13 +1347,54 @@ function render(data) {
   shops
     .slice()
     .sort(
-      (a, b) =>
-        order[
-          getEffectiveStatus(a)
-        ] -
-        order[
-          getEffectiveStatus(b)
-        ]
+      (a, b) => {
+        const aBusiness =
+          getBusinessState(a);
+    
+        const bBusiness =
+          getBusinessState(b);
+    
+        const getBusinessOrder =
+          (state) => {
+            if (
+              state.configured &&
+              state.isOpen
+            ) {
+              return 0;
+            }
+    
+            if (
+              !state.configured
+            ) {
+              return 1;
+            }
+    
+            return 2;
+          };
+    
+        const businessDiff =
+          getBusinessOrder(
+            aBusiness
+          ) -
+          getBusinessOrder(
+            bBusiness
+          );
+    
+        if (
+          businessDiff !== 0
+        ) {
+          return businessDiff;
+        }
+    
+        return (
+          order[
+            getEffectiveStatus(a)
+          ] -
+          order[
+            getEffectiveStatus(b)
+          ]
+        );
+      }
     )
     .forEach((shop) => {
       shopListElement.appendChild(
